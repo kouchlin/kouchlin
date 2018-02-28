@@ -1,0 +1,31 @@
+buildscript {
+  ext.kotlin_version = '1.2.21'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+apply plugin: 'kotlin'
+
+defaultTasks 'run'
+
+repositories {
+  mavenCentral()
+   jcenter()
+}
+
+dependencies {
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  compile 'com.github.kittinunf.fuel:fuel:1.12.1'
+  compile 'com.github.kittinunf.fuel:fuel-gson:1.12.1'
+  compile 'uy.kohesive.klutter:klutter-core:2.3.2'
+  testCompile 'junit:junit:4.11'
+  testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = "4.1"
+}
