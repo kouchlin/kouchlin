@@ -48,6 +48,13 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 		assert(!database.exists())
 
 	}
+	
+	@Test
+	fun compactTest() {
+		var database = couchdb.database("kouchlin-test-db")
+		assert(database.compact())
+
+	}
 
 	@Test
 	fun createDBTest() {
