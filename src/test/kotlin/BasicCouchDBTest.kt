@@ -12,7 +12,7 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 
 	@Test
 	fun couchDBVersionTest() {
-		assert(couchdb.version() == "2.0.0")
+		assert(couchdb.version()!!.startsWith("2"))
 	}
 
 	@Test
@@ -25,6 +25,7 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 	fun couchDBUpdatesTest() {
 		var updates = couchdb.dbUpdates()
 		updates = couchdb.dbUpdates(updates?.lastSeq)
+		
 		assert(updates!!.results.size == 0);
 	}
 
