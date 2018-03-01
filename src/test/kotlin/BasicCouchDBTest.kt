@@ -2,6 +2,7 @@ import org.junit.Test
 import org.kouchlin.CouchDB
 import org.kouchlin.Feed
 import org.junit.BeforeClass
+import org.kouchlin.STATUS
 
 class BasicCouchDBTest : CouchDBBaseTest() {
 
@@ -18,14 +19,14 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 	@Test
 	fun couchDBAllDBsTest() {
 		val dbs = couchdb.databases()?.size
-		assert(dbs != null && dbs > 0) 
+		assert(dbs != null && dbs > 0)
 	}
 
 	@Test
 	fun couchDBUpdatesTest() {
 		var updates = couchdb.dbUpdates()
 		updates = couchdb.dbUpdates(updates?.lastSeq)
-		
+
 		assert(updates!!.results.size == 0);
 	}
 
@@ -48,14 +49,14 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 		assert(!database.exists())
 
 	}
-	
+
 	@Test
 	fun compactTest() {
 		var database = couchdb.database("kouchlin-test-db")
 		assert(database.compact())
 
 	}
-	
+
 	@Test
 	fun ensureFullCommitTest() {
 		var database = couchdb.database("kouchlin-test-db")
@@ -71,5 +72,12 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 		assert(database.exists())
 		assert(database.delete())
 		assert(!database.exists())
+	}
+
+	@Test
+	fun existsDocTest() {
+		var database = couchdb.database("kouchlin-test-db")
+		var (size, etag, status) = database.document("test").exists()
+		assert(status == STATUS.NOT_FOUND)
 	}
 }

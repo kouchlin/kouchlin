@@ -52,15 +52,9 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 
 	fun dbUpdates(feed: Feed, timeout: Int? = null, heartbeat: Int? = null, since: String? = null, action: (updates: DBUpdates?) -> Unit) {
 		var parameters: MutableList<Pair<String, Any?>> = mutableListOf("feed" to feed.value)
-		if (timeout != null) {
-			parameters.add("timeout" to timeout)
-		}
-		if (heartbeat != null) {
-			parameters.add("heartbeat" to heartbeat)
-		}
-		if (since != null) {
-			parameters.add("since" to since)
-		}
+		timeout?.let {parameters.add("timeout" to timeout)}
+		heartbeat?.let {parameters.add("heartbeat" to heartbeat)}
+		since?.let {parameters.add("since" to since)}
 
 		Fuel.get(DBUPDATES_ENDPOINT, parameters).responseObject(gsonDeserializerOf<DBUpdates>()) { _, _, result -> result.fold(action, { err -> println(err) }) }
 	}

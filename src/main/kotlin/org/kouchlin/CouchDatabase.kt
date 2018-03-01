@@ -47,4 +47,6 @@ class CouchDatabase(val dbName: String) {
 		return response.statusCode == 201
 	}
 
+	fun document(id: String? = null, rev: String? = null) = CouchDatabaseDocument(this, id, rev)
+
 }
