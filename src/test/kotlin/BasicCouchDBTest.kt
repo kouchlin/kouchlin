@@ -55,6 +55,13 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 		assert(database.compact())
 
 	}
+	
+	@Test
+	fun ensureFullCommitTest() {
+		var database = couchdb.database("kouchlin-test-db")
+		assert(database.ensureFullCommit())
+
+	}
 
 	@Test
 	fun createDBTest() {
