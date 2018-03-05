@@ -14,7 +14,7 @@ class CouchDBDocumentCRUDTest : CouchDBBaseTest() {
 	@Test
 	fun getDocTest() {
 		var database = couchdb.database("kouchlin-test-db")
-		var (_, _, status) = database.document("test2").get(attachment=true, attsSince=listOf("1","2","3"))
+		var (_, response, status) = database.document("test2").get(attachment=true, attsSince=listOf("1-aaa","2-bbb","3-ccc"))
 		assert(status == STATUS.NOT_FOUND)
 	}
 	

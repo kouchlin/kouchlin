@@ -4,8 +4,11 @@ import com.github.kittinunf.fuel.gson.gsonDeserializerOf
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpHead
-import com.github.kittinunf.fuel.httpPut
 import com.github.kittinunf.fuel.httpPost
+import com.github.kittinunf.fuel.httpPut
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 internal const val ETAG_HEADER = "ETag"
 internal const val IF_NONE_MATCH_HEADER = "If-None-Match"
@@ -59,20 +62,19 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 		var parameters: MutableList<Pair<String, Any?>> = mutableListOf()
 		attachment?.let({ parameters.add("attachment" to attachment) })
 		attEncodingInfo?.let({ parameters.add("att_encoding_info" to attEncodingInfo) })
-		attsSince?.let({ parameters.add("atts_since" to attsSince.joinToString(separator = ",")) })
+		attsSince?.let({ parameters.add("atts_since" to attsSince.joinToString(prefix = "[", postfix = "]", separator = ",", transform = { "\"$it\"" })) })
 		conflicts?.let({ parameters.add("conflicts" to conflicts) })
 		deletedConflicts?.let({ parameters.add("deleted_conflicts" to deletedConflicts) })
 		latest?.let({ parameters.add("latest" to latest) })
 		localSeq?.let({ parameters.add("local_seq" to localSeq) })
 		meta?.let({ parameters.add("meta" to meta) })
-		openRevs?.let({ parameters.add("open_revs" to openRevs.joinToString(separator = ",")) })
+		openRevs?.let({ parameters.add("open_revs" to openRevs.joinToString(prefix = "[", postfix = "]", separator = ",", transform = { "\"$it\"" })) })
 		rev?.let({ parameters.add("rev" to rev) })
 		revs?.let({ parameters.add("revs" to revs) })
 		revsInfo?.let({ parameters.add("revs_info" to revsInfo) })
 
 		val (request, response, result) = documentURI.httpGet(parameters).header(headers).responseString()
-		println(request.toString())
-		println(request.cUrlString())
+		logger.info(request.cUrlString())
 		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
 
 		return Triple(result.component1(), responseEtag, transformStatusCode(response.statusCode))
@@ -86,8 +88,7 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 
 		val (request, response, result) = documentURI.httpPost(parameters).header(headers).body(content).responseObject(gsonDeserializerOf<SaveResponse>())
 		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
-		println(request.cUrlString())
-		println(response.toString())
+		logger.info(request.cUrlString())
 		return Triple(result.component1(), responseEtag, transformStatusCode(response.statusCode))
 	}
 
@@ -101,8 +102,7 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 
 		val (request, response, result) = documentURI.httpPut(parameters).header(headers).body(content).responseObject(gsonDeserializerOf<SaveResponse>())
 		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
-		println(request.cUrlString())
-		println(response.toString())
+		logger.info(request.cUrlString())
 		return Triple(result.component1(), responseEtag, transformStatusCode(response.statusCode))
 	}
 
@@ -131,6 +131,6 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 //	fun copy(destination: String, rev: String? = null, batch: Boolean? = null, fullCommit: Boolean? = null): Triple<SaveResponse?, String?, STATUS> {	
 //		Fuel.request("COPY",)
 //	}
-	
-	fun attachment(name:String) = CouchDatabaseDocAttachment(db,this,name)
+
+	fun attachment(name: String) = CouchDatabaseDocAttachment(db, this, name)
 }

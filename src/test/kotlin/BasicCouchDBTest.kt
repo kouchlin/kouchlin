@@ -24,17 +24,17 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 	@Test
 	fun couchDBUpdatesTest() {
 		var updates = couchdb.dbUpdates()
-		updates = couchdb.dbUpdates(updates?.lastSeq)
-
+//		updates = couchdb.dbUpdates(updates.lastSeq)
+		updates = couchdb.dbUpdates("now")
 		assert(updates!!.results.size == 0);
 	}
 
-	@Test
-	fun couchDBUpdatesLongpollTest() {
-		couchdb.dbUpdates(feed = Feed.LONGPOLL, since = "now", action = { updates -> println(">>>> " + updates) })
-		Thread.sleep(10000)
-		println("finish")
-	}
+//	@Test
+//	fun couchDBUpdatesLongpollTest() {
+//		couchdb.dbUpdates(feed = Feed.LONGPOLL, since = "now", action = { updates -> println(">>>> " + updates) })
+//		Thread.sleep(10000)
+//		println("finish")
+//	}
 
 	@Test
 	fun existsDBTest() {
