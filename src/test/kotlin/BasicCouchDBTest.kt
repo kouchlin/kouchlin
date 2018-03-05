@@ -1,7 +1,6 @@
 import org.junit.Test
 import org.kouchlin.CouchDB
 import org.kouchlin.Feed
-import org.junit.BeforeClass
 import org.kouchlin.STATUS
 
 class BasicCouchDBTest : CouchDBBaseTest() {
@@ -74,10 +73,4 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 		assert(!database.exists())
 	}
 
-	@Test
-	fun existsDocTest() {
-		var database = couchdb.database("kouchlin-test-db")
-		var (size, etag, status) = database.document("test").exists()
-		assert(status == STATUS.NOT_FOUND)
-	}
 }

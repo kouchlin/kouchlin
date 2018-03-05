@@ -61,5 +61,4 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 
 	fun database(dbname: String) = CouchDatabase(dbname)
 
-
 }
