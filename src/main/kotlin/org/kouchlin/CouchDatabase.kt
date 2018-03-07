@@ -2,33 +2,43 @@ package org.kouchlin
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.httpDelete
+import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
+import com.github.kittinunf.fuel.httpPut
+import com.github.kittinunf.fuel.gson.gsonDeserializerOf
+import org.kouchlin.domain.DBInfo
+import org.kouchlin.util.STATUS
+import org.kouchlin.util.configureAuthentication
+import org.kouchlin.util.transformStatusCode
 
 internal const val COMPACT_ENDPOINT = "/_compact"
 internal const val ENSURE_FULL_COMMIT_ENDPOINT = "/_ensure_full_commit"
 
-class CouchDatabase(val dbName: String) {
+class CouchDatabase(val server: CouchDB, val dbName: String) {
 
 	internal var compact_uri = "$dbName$COMPACT_ENDPOINT";
 	internal var ensureFullCommitUri = "$dbName$ENSURE_FULL_COMMIT_ENDPOINT"
 
-	fun exists(): Boolean {
-		val (_, response, _) = Fuel.head(dbName).response();
-		return (response.statusCode == 200)
+	fun exists(): STATUS {
+		val (_, response, _) = Fuel.head(dbName).configureAuthentication(server).response();
+		return transformStatusCode(response.statusCode)
 	}
 
-	fun create(q: Int? = null): Boolean {
+	fun create(q: Int? = null): STATUS {
 		var parameters: MutableList<Pair<String, Any?>> = mutableListOf()
-		if (q != null) {
-			parameters.add("q" to q)
-		}
-		val (_, response, _) = Fuel.put(dbName, parameters).response();
-		return (response.statusCode == 201 || response.statusCode == 202)
+		q?.let({ parameters.add("q" to q) })
+		val (_, response, _) = dbName.httpPut(parameters).configureAuthentication(server).response();
+		return transformStatusCode(response.statusCode)
 	}
 
-	fun delete(): Boolean {
-		val (_, response, _) = dbName.httpDelete().response();
-		return (response.statusCode == 200 || response.statusCode == 202)
+	fun delete(): STATUS {
+		val (_, response, _) = dbName.httpDelete().configureAuthentication(server).response();
+		return transformStatusCode(response.statusCode)
+	}
+
+	fun info(): Pair<DBInfo?, STATUS> {
+		val (_, response, result) = dbName.httpGet().configureAuthentication(server).responseObject(gsonDeserializerOf<DBInfo>());
+		return Pair(result.component1(), transformStatusCode(response.statusCode))
 	}
 
 	fun compact(ddoc: String? = null): Boolean {
@@ -38,12 +48,12 @@ class CouchDatabase(val dbName: String) {
 			"$compact_uri/$ddoc"
 		}
 
-		val (_, response, _) = ddoc_compact_uri.httpPost().header("Content-Type" to "application/json").response();
+		val (_, response, _) = ddoc_compact_uri.httpPost().configureAuthentication(server).header("Content-Type" to "application/json").response();
 		return response.statusCode == 202
 	}
 
 	fun ensureFullCommit(): Boolean {
-		val (_, response, _) = ensureFullCommitUri.httpPost().header("Content-Type" to "application/json").response();
+		val (_, response, _) = ensureFullCommitUri.httpPost().configureAuthentication(server).header("Content-Type" to "application/json").response();
 		return response.statusCode == 201
 	}
 

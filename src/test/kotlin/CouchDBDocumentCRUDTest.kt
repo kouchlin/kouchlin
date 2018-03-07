@@ -1,7 +1,5 @@
 import org.junit.Test
-import org.kouchlin.CouchDB
-import org.kouchlin.Feed
-import org.kouchlin.STATUS
+import org.kouchlin.util.STATUS
 
 class CouchDBDocumentCRUDTest : CouchDBBaseTest() {
 	@Test

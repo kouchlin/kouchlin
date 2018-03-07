@@ -1,7 +1,5 @@
 import org.junit.Test
-import org.kouchlin.CouchDB
-import org.kouchlin.Feed
-import org.kouchlin.STATUS
+import org.kouchlin.util.STATUS
 
 class BasicCouchDBTest : CouchDBBaseTest() {
 
@@ -39,14 +37,13 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 	@Test
 	fun existsDBTest() {
 		var database = couchdb.database("kouchlin-test-db")
-		assert(database.exists())
+		assert(database.exists() == STATUS.OK)
 	}
 
 	@Test
 	fun notExistsDBTest() {
 		var database = couchdb.database("not-exists-db")
-		assert(!database.exists())
-
+		assert(database.exists() == STATUS.NOT_FOUND)
 	}
 
 	@Test
@@ -62,15 +59,23 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 		assert(database.ensureFullCommit())
 
 	}
+	
+	@Test
+	fun dbInfoTest() {
+		var database = couchdb.database("kouchlin-test-db")
+		assert(database.info().component1()?.dbName=="kouchlin-test-db")
+
+	}
 
 	@Test
 	fun createDBTest() {
 		var database = couchdb.database("kouchlin-test-db-crud")
-		assert(!database.exists())
-		assert(database.create())
-		assert(database.exists())
-		assert(database.delete())
-		assert(!database.exists())
+		database.delete()
+		assert(database.exists()==STATUS.NOT_FOUND)
+		assert(database.create()==STATUS.CREATED)
+		assert(database.exists()==STATUS.OK)
+		assert(database.delete()==STATUS.OK)
+		assert(database.exists()==STATUS.NOT_FOUND)
 	}
 
 }

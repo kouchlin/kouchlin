@@ -7,7 +7,10 @@ import com.github.kittinunf.fuel.httpGet
 import mu.KotlinLogging
 import org.kouchlin.auth.BasicAuthentication
 import org.kouchlin.domain.DBUpdates
-
+import org.kouchlin.util.Version
+import org.kouchlin.util.Feed
+import org.kouchlin.util.configureAuthentication
+		
 private val logger = KotlinLogging.logger {}
 
 internal const val UP_ENDPOINT = "_up";
@@ -15,14 +18,11 @@ internal const val VERSION_ENDPOINT = "";
 internal const val ALLDBS_ENDPOINT = "_all_dbs";
 internal const val DBUPDATES_ENDPOINT = "_db_updates";
 
-data class Version(val version: String)
-enum class Feed(val value: String) {NORMAL("normal"), LONGPOLL("longpoll"), CONTINOUS("continous"), EVENTSOURCE("eventsource") }
 
 class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = null) {
 
 	init {
 		FuelManager.instance.basePath = serverURL
-
 	}
 
 	fun up(): Boolean {
@@ -48,20 +48,20 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 			parameters.add("since" to since)
 		}
 
-		val (request, _, result) = DBUPDATES_ENDPOINT.httpGet(parameters).responseObject(gsonDeserializerOf<DBUpdates>())
+		val (request, _, result) = DBUPDATES_ENDPOINT.httpGet(parameters).configureAuthentication(this).responseObject(gsonDeserializerOf<DBUpdates>())
 		logger.info(request.cUrlString())
 		return result.component1()
 	}
 
-	fun dbUpdates(feed: Feed, timeout: Int? = null, heartbeat: Int? = null, since: String? = null, action: (updates: DBUpdates?) -> Unit) {
+	fun dbUpdates(feed: Feed, timeout: Int? = null, heartbeat: Int? = null, since: String? = null, action: (DBUpdates?) -> Unit) {
 		var parameters: MutableList<Pair<String, Any?>> = mutableListOf("feed" to feed.value)
 		timeout?.let { parameters.add("timeout" to timeout) }
 		heartbeat?.let { parameters.add("heartbeat" to heartbeat) }
 		since?.let { parameters.add("since" to since) }
 
-		DBUPDATES_ENDPOINT.httpGet(parameters).responseObject(gsonDeserializerOf<DBUpdates>()) { _, _, result -> result.fold(action, { err -> println(err) }) }
+		DBUPDATES_ENDPOINT.httpGet(parameters).configureAuthentication(this).responseObject(gsonDeserializerOf<DBUpdates>()) { _, _, result -> result.fold(action, { err -> println(err) }) }
 	}
 
-	fun database(dbname: String) = CouchDatabase(dbname)
+	fun database(dbname: String) = CouchDatabase(this,dbname)
 
 }
