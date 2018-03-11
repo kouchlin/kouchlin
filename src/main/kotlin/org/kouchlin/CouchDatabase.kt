@@ -1,7 +1,7 @@
 package org.kouchlin
 
 import com.github.kittinunf.fuel.Fuel
-import org.kouchlin.gson.gsonDeserializerOf
+import com.github.kittinunf.fuel.gson.gsonDeserializerOf
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
