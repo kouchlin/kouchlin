@@ -28,6 +28,7 @@ dependencies {
   compile 'com.github.kittinunf.fuel:fuel-gson:1.12.1'
   compile 'uy.kohesive.klutter:klutter-core:2.3.2'
   compile 'io.github.microutils:kotlin-logging:1.4.9'
+  compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5'
   testCompile 'junit:junit:4.11'
   testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
   testCompile 'org.slf4j:slf4j-simple:1.7.5'

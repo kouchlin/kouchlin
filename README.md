@@ -18,8 +18,8 @@ WIP: A Kotlin client for CouchDB
 | /_membership                                 | GET    | :heavy_multiplication_x: |
 | /_scheduler/jobs                             | GET    | :heavy_multiplication_x: |
 | /_scheduler/docs                             | GET    | :heavy_multiplication_x: |
-| GET /_scheduler/docs/{replicator_db}         | GET    | :heavy_multiplication_x: |
-| GET /_scheduler/docs/{replicator_db}/{docid} | GET    | :heavy_multiplication_x: |
+| /_scheduler/docs/{replicator_db}             | GET    | :heavy_multiplication_x: |
+| /_scheduler/docs/{replicator_db}/{docid}     | GET    | :heavy_multiplication_x: |
 | /_restart                                    | POST   | :heavy_multiplication_x: |
 | /_stats                                      | GET    | :heavy_multiplication_x: |
 

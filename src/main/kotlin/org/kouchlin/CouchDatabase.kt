@@ -1,12 +1,13 @@
 package org.kouchlin
 
 import com.github.kittinunf.fuel.Fuel
+import org.kouchlin.gson.gsonDeserializerOf
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
-import com.github.kittinunf.fuel.gson.gsonDeserializerOf
 import org.kouchlin.domain.DBInfo
+import org.kouchlin.gson.domain.GsonDBInfo
 import org.kouchlin.util.STATUS
 import org.kouchlin.util.configureAuthentication
 import org.kouchlin.util.transformStatusCode
@@ -37,7 +38,7 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 	}
 
 	fun info(): Pair<DBInfo?, STATUS> {
-		val (_, response, result) = dbName.httpGet().configureAuthentication(server).responseObject(gsonDeserializerOf<DBInfo>());
+		val (_, response, result) = dbName.httpGet().configureAuthentication(server).responseObject(gsonDeserializerOf<GsonDBInfo>());
 		return Pair(result.component1(), transformStatusCode(response.statusCode))
 	}
 

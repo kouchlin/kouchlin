@@ -1,4 +1,7 @@
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
+import org.kouchlin.util.Feed
 import org.kouchlin.util.STATUS
 
 class BasicCouchDBTest : CouchDBBaseTest() {
@@ -30,7 +33,10 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 //	@Test
 //	fun couchDBUpdatesLongpollTest() {
 //		couchdb.dbUpdates(feed = Feed.LONGPOLL, since = "now", action = { updates -> println(">>>> " + updates) })
-//		Thread.sleep(10000)
+////		Thread.sleep(10000)
+//		runBlocking {
+//			delay(100000)
+//		}
 //		println("finish")
 //	}
 
@@ -59,11 +65,11 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 		assert(database.ensureFullCommit())
 
 	}
-	
+
 	@Test
 	fun dbInfoTest() {
 		var database = couchdb.database("kouchlin-test-db")
-		assert(database.info().component1()?.dbName=="kouchlin-test-db")
+		assert(database.info().component1()?.dbName == "kouchlin-test-db")
 
 	}
 
@@ -71,11 +77,11 @@ class BasicCouchDBTest : CouchDBBaseTest() {
 	fun createDBTest() {
 		var database = couchdb.database("kouchlin-test-db-crud")
 		database.delete()
-		assert(database.exists()==STATUS.NOT_FOUND)
-		assert(database.create()==STATUS.CREATED)
-		assert(database.exists()==STATUS.OK)
-		assert(database.delete()==STATUS.OK)
-		assert(database.exists()==STATUS.NOT_FOUND)
+		assert(database.exists() == STATUS.NOT_FOUND)
+		assert(database.create() == STATUS.CREATED)
+		assert(database.exists() == STATUS.OK)
+		assert(database.delete() == STATUS.OK)
+		assert(database.exists() == STATUS.NOT_FOUND)
 	}
 
 }

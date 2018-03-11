@@ -10,7 +10,7 @@ import org.kouchlin.domain.DBUpdates
 import org.kouchlin.util.Version
 import org.kouchlin.util.Feed
 import org.kouchlin.util.configureAuthentication
-		
+
 private val logger = KotlinLogging.logger {}
 
 internal const val UP_ENDPOINT = "_up";
