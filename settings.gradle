@@ -1,1 +1,3 @@
-rootProject.name = 'kouchlin'
+include ':kouchlin',
+ 		':kouchlin-gson',
+ 		':kouchlin-jackson'
