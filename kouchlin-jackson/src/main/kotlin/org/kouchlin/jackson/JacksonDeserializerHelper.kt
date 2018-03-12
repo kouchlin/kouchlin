@@ -30,4 +30,6 @@ class JacksonDeserializerHelper : DeserializerHelper {
 
 	override fun deserializeDBUpdates() = jacksonDeserializerOf<JacksonDBUpdates>()
 	override fun deserializeDBInfo() = jacksonDeserializerOf<JacksonDBInfo>()
+	
+	override fun serialize(entity: Any): String = mapper.writeValueAsString(entity)
 }

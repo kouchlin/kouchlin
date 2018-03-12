@@ -13,6 +13,9 @@ class GsonDeserializerHelper : DeserializerHelper {
 		override fun deserialize(reader: Reader): T = Gson().fromJson<T>(reader, c)
 	}
 
+	override fun serialize(entity: Any): String = Gson().toJson(entity)
+
+
 	override fun deserializeDBUpdates() = gsonDeserializerOf<GsonDBUpdates>()
 	override fun deserializeDBInfo() = gsonDeserializerOf<GsonDBInfo>()
 }

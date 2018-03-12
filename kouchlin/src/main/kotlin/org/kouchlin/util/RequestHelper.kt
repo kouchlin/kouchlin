@@ -3,11 +3,12 @@ package org.kouchlin.util
 import com.github.kittinunf.fuel.core.Request
 import org.kouchlin.CouchDB
 
-internal const val IF_NONE_MATCH_HEADER = "If-None-Match"
-internal const val IF_MATCH_HEADER = "If-Match"
-internal const val FULL_COMMIT_HEADER = "X-Couch-Full-Commit"
-internal const val CONTENT_LENGHT_HEADER = "Content-Length"
-internal const val CONTENT_TYPE_HEADER = "Content-Type"
+const val IF_NONE_MATCH_HEADER = "If-None-Match"
+const val IF_MATCH_HEADER = "If-Match"
+const val FULL_COMMIT_HEADER = "X-Couch-Full-Commit"
+const val CONTENT_LENGHT_HEADER = "Content-Length"
+const val CONTENT_TYPE_HEADER = "Content-Type"
+const val ETAG_HEADER = "ETag"
 
 enum class STATUS(val success: Boolean, val code: Int) {
 	OK(true, 200),
@@ -18,7 +19,7 @@ enum class STATUS(val success: Boolean, val code: Int) {
 	NOT_FOUND(false, 404),
 	BAD_REQUEST(true, 400),
 	CONFLICT(false, 409),
-	PRECONDITION_FAILED(false,412),
+	PRECONDITION_FAILED(false, 412),
 	ERROR(false, 500),
 	UNKNOWN(false, -1)
 }
@@ -40,7 +41,7 @@ fun configureHeaders(rev: String? = null,
 					 etag: String? = null,
 					 fullCommit: Boolean? = null,
 					 contentType: String? = null): Map<String, Any> {
-	
+
 	var headers: MutableMap<String, Any> = mutableMapOf()
 	etag?.let { headers.put(IF_NONE_MATCH_HEADER, etag) }
 	rev?.let { headers.put(IF_MATCH_HEADER, rev) }

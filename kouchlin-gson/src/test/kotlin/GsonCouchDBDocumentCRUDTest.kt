@@ -12,7 +12,7 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 	@Test
 	fun getDocTest() {
 		var database = couchdb.database("kouchlin-test-db")
-		var (_, response, status) = database.document("test2").get(attachment=true, attsSince=listOf("1-aaa","2-bbb","3-ccc"))
+		var (_, _, status) = database.document("test2").get<String>(attachment=true, attsSince=listOf("1-aaa","2-bbb","3-ccc"))
 		assert(status == STATUS.NOT_FOUND)
 	}
 	
@@ -24,7 +24,7 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 					}"""
 		var (_, _, status) = database.document("test").save(content=doc)
 		
-		//assert(status == STATUS.NOT_FOUND)
+		assert(status == STATUS.CREATED)
 	}
 	
 	@Test
@@ -35,7 +35,7 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 					}"""
 		var (_, _, status) = database.document().save(content=doc)
 		
-		//assert(status == STATUS.NOT_FOUND)
+		assert(status == STATUS.CREATED)
 	}
 
 }

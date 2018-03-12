@@ -8,6 +8,7 @@ import org.kouchlin.util.configureAuthentication
 import org.kouchlin.util.configureHeaders
 import org.kouchlin.util.configureParameters
 import org.kouchlin.util.transformStatusCode
+import org.kouchlin.util.ETAG_HEADER
 
 class CouchDatabaseDocAttachment(val db: CouchDatabase, val doc: CouchDatabaseDocument, val name: String) {
 

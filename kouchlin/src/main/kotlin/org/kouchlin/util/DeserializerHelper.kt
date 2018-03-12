@@ -5,8 +5,8 @@ import org.kouchlin.domain.DBUpdates
 import org.kouchlin.domain.DBInfo
 
 interface DeserializerHelper {
-	
-	 fun <T:Any > deserialize(c:Class<T>): ResponseDeserializable<T>
-	 fun deserializeDBUpdates() : ResponseDeserializable<DBUpdates> 
-	 fun deserializeDBInfo() : ResponseDeserializable<DBInfo> 
+	fun <T : Any> deserialize(c: Class<T>): ResponseDeserializable<T>
+	fun deserializeDBUpdates(): ResponseDeserializable<DBUpdates>
+	fun deserializeDBInfo(): ResponseDeserializable<DBInfo>
+	fun serialize(entity: Any): String
 }

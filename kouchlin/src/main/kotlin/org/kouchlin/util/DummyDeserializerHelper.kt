@@ -15,4 +15,8 @@ class DummyDeserializerHelper : DeserializerHelper {
 	override fun deserializeDBUpdates() = deserialize(DBUpdates::class.java)
 	override fun deserializeDBInfo() = deserialize(DBInfo::class.java)
 
+	override fun serialize(entity: Any): String {
+		throw UnsupportedOperationException()
+	}
+
 }
