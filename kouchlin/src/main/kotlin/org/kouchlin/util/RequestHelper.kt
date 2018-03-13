@@ -1,7 +1,9 @@
 package org.kouchlin.util
 
 import com.github.kittinunf.fuel.core.Request
+import com.github.kittinunf.fuel.core.Response
 import org.kouchlin.CouchDB
+import java.lang.UnsupportedOperationException
 
 const val IF_NONE_MATCH_HEADER = "If-None-Match"
 const val IF_MATCH_HEADER = "If-Match"
@@ -9,6 +11,8 @@ const val FULL_COMMIT_HEADER = "X-Couch-Full-Commit"
 const val CONTENT_LENGHT_HEADER = "Content-Length"
 const val CONTENT_TYPE_HEADER = "Content-Type"
 const val ETAG_HEADER = "ETag"
+
+const val APPLICATION_JSON = "application/json"
 
 enum class STATUS(val success: Boolean, val code: Int) {
 	OK(true, 200),
@@ -31,11 +35,6 @@ enum class Feed(val value: String) {
 	EVENTSOURCE("eventsource")
 }
 
-fun transformStatusCode(status: Int): STATUS {
-	var response = STATUS.values().find { it.code == status }
-	if (response == null) response = STATUS.UNKNOWN
-	return response
-}
 
 fun configureHeaders(rev: String? = null,
 					 etag: String? = null,
@@ -64,7 +63,8 @@ fun configureParameters(attachment: Boolean? = null,
 						revs: Boolean? = null,
 						revsInfo: Boolean? = null,
 						batch: Boolean? = null,
-						newEdits: Boolean? = null): List<Pair<String, Any?>> {
+						newEdits: Boolean? = null,
+						q: Int? = null): List<Pair<String, Any?>> {
 
 	var parameters: MutableList<Pair<String, Any?>> = mutableListOf()
 	attachment?.let({ parameters.add("attachment" to attachment) })
@@ -81,10 +81,9 @@ fun configureParameters(attachment: Boolean? = null,
 	revsInfo?.let({ parameters.add("revs_info" to revsInfo) })
 	batch?.let({ if (batch) parameters.add("batch" to "ok") })
 	newEdits?.let({ parameters.add("new_edits" to newEdits) })
+	q?.let({ parameters.add("q" to q) })
 	return parameters;
 }
-
-fun Request.configureAuthentication(server: CouchDB): Request = configureAuthentication(server, this)
 
 fun configureAuthentication(server: CouchDB, request: Request): Request {
 	if (server.authentication != null) {
@@ -93,3 +92,21 @@ fun configureAuthentication(server: CouchDB, request: Request): Request {
 		return request
 	}
 }
+
+fun Request.configureAuthentication(server: CouchDB): Request = configureAuthentication(server, this)
+
+inline fun <reified T> Response.getHeaderValue(name: String): T {
+	val value = this.headers.get(name)?.first()
+	return when (T::class) {
+		String::class -> value as T
+		Int::class -> value?.toInt() as T
+		else -> throw UnsupportedOperationException("${T::class} conversion is not supported")
+	}
+}
+
+fun Response.toStatus(): STATUS {
+	val response = STATUS.values().find { it.code == this.statusCode }
+	return response ?: STATUS.UNKNOWN
+}
+
+

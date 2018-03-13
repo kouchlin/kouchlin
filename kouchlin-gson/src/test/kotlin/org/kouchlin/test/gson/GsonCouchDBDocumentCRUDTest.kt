@@ -25,8 +25,12 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 					"a":1
 					}"""
 		var (_, _, status) = database.document("test").save(content = doc)
-
 		assert(status == STATUS.CREATED)
+
+		var (size, etag, status2) = database.document("test").exists()
+		assert(status2 == STATUS.OK)
+		assert((size ?: 0) > 0) 
+		assert(etag != null)
 	}
 
 	@Test

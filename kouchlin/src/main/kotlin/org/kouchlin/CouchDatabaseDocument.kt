@@ -6,20 +6,18 @@ import com.github.kittinunf.fuel.httpHead
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
 import mu.KotlinLogging
+import org.kouchlin.util.APPLICATION_JSON
+import org.kouchlin.util.CONTENT_LENGHT_HEADER
+import org.kouchlin.util.ETAG_HEADER
 import org.kouchlin.util.STATUS
 import org.kouchlin.util.SaveResponse
 import org.kouchlin.util.configureAuthentication
 import org.kouchlin.util.configureHeaders
 import org.kouchlin.util.configureParameters
-import org.kouchlin.util.transformStatusCode
-import org.kouchlin.util.ETAG_HEADER
-
+import org.kouchlin.util.getHeaderValue
+import org.kouchlin.util.toStatus
 
 private val logger = KotlinLogging.logger {}
-
-internal const val IF_NONE_MATCH_HEADER = "If-None-Match"
-internal const val CONTENT_LENGHT_HEADER = "Content-Length"
-internal const val CONTENT_TYPE_HEADER = "Content-Type"
 
 class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val rev: String? = null) {
 
@@ -33,10 +31,10 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 				.header(headers)
 				.response()
 
-		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
-		val contentLenght: Int? = response.headers.get(CONTENT_LENGHT_HEADER)?.first()?.toInt()
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
+		val contentLenght = response.getHeaderValue<Int?>(CONTENT_LENGHT_HEADER)
 
-		return Triple(contentLenght, responseEtag, transformStatusCode(response.statusCode))
+		return Triple(contentLenght, responseEtag, response.toStatus())
 	}
 
 	inline fun <reified T : Any> get(attachment: Boolean? = null,
@@ -76,51 +74,53 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 		val (_, response, result) = if (String::class.java is T)
 			request.responseString()
 		else
-			request.responseObject(CouchDB.deserializer.deserialize(T::class.java))
+			request.responseObject(CouchDB.adapter.deserialize(T::class.java))
 
-		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
 
-		return Triple(result.component1() as T?, responseEtag, transformStatusCode(response.statusCode))
+		return Triple(result.component1() as T?, responseEtag, response.toStatus())
 	}
 
 	internal fun saveWithPost(batch: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
-		val headers = configureHeaders(contentType = "application/json")
+		val headers = configureHeaders(contentType = APPLICATION_JSON)
 		val parameters = configureParameters(batch = batch)
-		
+
 		val jsonContent = when (content) {
 			is String -> content
-			else -> CouchDB.deserializer.serialize(content)
-		} 
-		
+			else -> CouchDB.adapter.serialize(content)
+		}
+
 		val (request, response, result) = documentURI.httpPost(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
 				.body(jsonContent)
-				.responseObject(CouchDB.deserializer.deserialize(SaveResponse::class.java))
+				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
-		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
 		logger.info(request.cUrlString())
-		return Triple(result.component1(), responseEtag, transformStatusCode(response.statusCode))
+		return Triple(result.component1(), responseEtag, response.toStatus())
 	}
 
 	internal fun saveWithPut(rev: String? = null, batch: Boolean? = null, newEdits: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
-		val headers = configureHeaders(contentType = "application/json")
-		val parameters = configureParameters(rev = rev, batch = batch, newEdits = newEdits)
+		val headers = configureHeaders(contentType = APPLICATION_JSON)
+		val parameters = configureParameters(rev = rev,
+				batch = batch,
+				newEdits = newEdits)
 
 		val jsonContent = when (content) {
 			is String -> content
-			else -> CouchDB.deserializer.serialize(content)
+			else -> CouchDB.adapter.serialize(content)
 		}
-		
+
 		val (request, response, result) = documentURI.httpPut(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
 				.body(jsonContent)
-				.responseObject(CouchDB.deserializer.deserialize(SaveResponse::class.java))
+				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
-		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
 		logger.info(request.cUrlString())
-		return Triple(result.component1(), responseEtag, transformStatusCode(response.statusCode))
+		return Triple(result.component1(), responseEtag, response.toStatus())
 	}
 
 	fun save(rev: String? = null, batch: Boolean? = null, newEdits: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
@@ -138,10 +138,11 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 		val (_, response, result) = documentURI.httpDelete(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
-				.responseObject(CouchDB.deserializer.deserialize(SaveResponse::class.java))
+				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
-		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
-		return Triple(result.component1(), responseEtag, transformStatusCode(response.statusCode))
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
+		
+		return Triple(result.component1(), responseEtag, response.toStatus())
 	}
 
 // Copy is a non-standard method in HTTP that is not supported by FUEL library

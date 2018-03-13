@@ -2,13 +2,15 @@ package org.kouchlin
 
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpHead
+import org.kouchlin.util.CONTENT_LENGHT_HEADER
+import org.kouchlin.util.ETAG_HEADER
 import org.kouchlin.util.STATUS
 import org.kouchlin.util.SaveResponse
 import org.kouchlin.util.configureAuthentication
 import org.kouchlin.util.configureHeaders
 import org.kouchlin.util.configureParameters
-import org.kouchlin.util.transformStatusCode
-import org.kouchlin.util.ETAG_HEADER
+import org.kouchlin.util.getHeaderValue
+import org.kouchlin.util.toStatus
 
 class CouchDatabaseDocAttachment(val db: CouchDatabase, val doc: CouchDatabaseDocument, val name: String) {
 
@@ -23,10 +25,10 @@ class CouchDatabaseDocAttachment(val db: CouchDatabase, val doc: CouchDatabaseDo
 				.header(headers)
 				.response()
 
-		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
-		val contentLenght: Int? = response.headers.get(CONTENT_LENGHT_HEADER)?.first()?.toInt()
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
+		val contentLenght = response.getHeaderValue<Int?>(CONTENT_LENGHT_HEADER)
 
-		return Triple(contentLenght, responseEtag, transformStatusCode(response.statusCode))
+		return Triple(contentLenght, responseEtag, response.toStatus())
 	}
 
 	fun get(rev: String? = null, etag: String? = null) {
@@ -38,9 +40,9 @@ class CouchDatabaseDocAttachment(val db: CouchDatabase, val doc: CouchDatabaseDo
 		val (_, response, result) = attachmentURI.httpDelete(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
-				.responseObject(CouchDB.deserializer.deserialize(SaveResponse::class.java))
+				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
-		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
 		//TODO: Return content
 
 	}
@@ -53,10 +55,10 @@ class CouchDatabaseDocAttachment(val db: CouchDatabase, val doc: CouchDatabaseDo
 		val (_, response, result) = attachmentURI.httpDelete(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
-				.responseObject(CouchDB.deserializer.deserialize(SaveResponse::class.java))
+				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
-		val responseEtag = response.headers.get(ETAG_HEADER)?.first()
-		return Triple(result.component1(), responseEtag, transformStatusCode(response.statusCode))
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
+		return Triple(result.component1(), responseEtag, response.toStatus())
 	}
 
 }

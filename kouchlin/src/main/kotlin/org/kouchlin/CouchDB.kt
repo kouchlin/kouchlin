@@ -22,7 +22,7 @@ internal const val DBUPDATES_ENDPOINT = "_db_updates";
 class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = null) {
 
 	companion object {
-		var deserializer: JsonAdapter = DummyJsonAdapter()
+		var adapter: JsonAdapter = DummyJsonAdapter()
 	}
 
 	init {
@@ -35,12 +35,12 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 	}
 
 	fun version(): String? {
-		val (_, _, result) = VERSION_ENDPOINT.httpGet().responseObject(deserializer.deserialize(Version::class.java))
+		val (_, _, result) = VERSION_ENDPOINT.httpGet().responseObject(adapter.deserialize(Version::class.java))
 		return result.component1()?.version
 	}
 
 	fun databases(): List<String>? {
-		val (_, _, result) = ALLDBS_ENDPOINT.httpGet().responseObject(deserializer.deserialize(List::class.java as Class<List<String>>))
+		val (_, _, result) = ALLDBS_ENDPOINT.httpGet().responseObject(adapter.deserialize(List::class.java as Class<List<String>>))
 		return result.component1()
 	}
 
@@ -54,7 +54,7 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 
 		val (request, _, result) = DBUPDATES_ENDPOINT.httpGet(parameters)
 				.configureAuthentication(this)
-				.responseObject(deserializer.deserializeDBUpdates())
+				.responseObject(adapter.deserializeDBUpdates())
 
 		logger.info(request.cUrlString())
 		return result.component1()
@@ -68,7 +68,7 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 
 		DBUPDATES_ENDPOINT.httpGet(parameters)
 				.configureAuthentication(this)
-				.responseObject(deserializer.deserializeDBUpdates()) { _, _, result -> result.fold(action, { err -> println(err) }) }
+				.responseObject(adapter.deserializeDBUpdates()) { _, _, result -> result.fold(action, { err -> println(err) }) }
 	}
 
 	fun database(dbname: String) = CouchDatabase(this, dbname)

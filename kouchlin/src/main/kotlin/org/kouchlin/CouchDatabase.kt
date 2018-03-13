@@ -8,7 +8,10 @@ import com.github.kittinunf.fuel.httpPut
 import org.kouchlin.domain.DBInfo
 import org.kouchlin.util.STATUS
 import org.kouchlin.util.configureAuthentication
-import org.kouchlin.util.transformStatusCode
+import org.kouchlin.util.toStatus
+import org.kouchlin.util.configureParameters
+import org.kouchlin.util.configureHeaders
+import org.kouchlin.util.APPLICATION_JSON
 
 internal const val COMPACT_ENDPOINT = "/_compact"
 internal const val ENSURE_FULL_COMMIT_ENDPOINT = "/_ensure_full_commit"
@@ -20,39 +23,44 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 
 	fun exists(): STATUS {
 		val (_, response, _) = Fuel.head(dbName).configureAuthentication(server).response();
-		return transformStatusCode(response.statusCode)
+		return response.toStatus()
 	}
 
 	fun create(q: Int? = null): STATUS {
-		var parameters: MutableList<Pair<String, Any?>> = mutableListOf()
-		q?.let({ parameters.add("q" to q) })
+		val parameters = configureParameters(q = q)
 		val (_, response, _) = dbName.httpPut(parameters).configureAuthentication(server).response();
-		return transformStatusCode(response.statusCode)
+		return response.toStatus()
 	}
 
 	fun delete(): STATUS {
 		val (_, response, _) = dbName.httpDelete().configureAuthentication(server).response();
-		return transformStatusCode(response.statusCode)
+		return response.toStatus()
 	}
 
 	fun info(): Pair<DBInfo?, STATUS> {
-		val (_, response, result) = dbName.httpGet().configureAuthentication(server).responseObject(CouchDB.deserializer.deserializeDBInfo());
-		return Pair(result.component1(), transformStatusCode(response.statusCode))
+		val (_, response, result) = dbName.httpGet()
+				.configureAuthentication(server)
+				.responseObject(CouchDB.adapter.deserializeDBInfo());
+		
+		return Pair(result.component1(), response.toStatus())
 	}
 
 	fun compact(ddoc: String? = null): Boolean {
-		val ddoc_compact_uri = if (ddoc == null) {
-			compact_uri
-		} else {
-			"$compact_uri/$ddoc"
-		}
-
-		val (_, response, _) = ddoc_compact_uri.httpPost().configureAuthentication(server).header("Content-Type" to "application/json").response();
+		val ddoc_compact_uri = "$compact_uri${ddoc?.let({"/$ddoc"}).orEmpty()}"
+		val headers = configureHeaders(contentType = APPLICATION_JSON)
+		val (_, response, _) = ddoc_compact_uri.httpPost()
+				.configureAuthentication(server)
+				.header(headers).response()
+		
 		return response.statusCode == 202
 	}
 
 	fun ensureFullCommit(): Boolean {
-		val (_, response, _) = ensureFullCommitUri.httpPost().configureAuthentication(server).header("Content-Type" to "application/json").response();
+		val headers = configureHeaders(contentType = APPLICATION_JSON)
+		val (_, response, _) = ensureFullCommitUri.httpPost()
+				.configureAuthentication(server)
+				.header(headers).response();
+		
 		return response.statusCode == 201
 	}
 

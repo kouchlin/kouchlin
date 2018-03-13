@@ -12,7 +12,7 @@ open class JacksonCouchDBBaseTest {
 		@BeforeClass
 		@JvmStatic
 		fun setUpClass() {
-			CouchDB.deserializer = JacksonJsonAdapter()
+			CouchDB.adapter = JacksonJsonAdapter()
 			couchdb = CouchDB("http://localhost:5984")
 			couchdb.database("kouchlin-test-db").create()
 		}
