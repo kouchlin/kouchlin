@@ -1,38 +1,46 @@
 buildscript {
-  ext.kotlin_version = '1.2.21'
+    ext {
+        publishVersion = '1.12.1'
+
+        //dependencies version
+        kotlinVersion = '1.2.10'
+        resultVersion = '1.3.0'
+		fuelVersion = '1.12.1'
+
+        //test dependencies version
+        junitVersion = '4.12'
+        robolectricVersion = '3.4.2'
+        gsonVersion = '2.8.2'
+        jacksonVersion = '2.9.3'
+        moshiVersion = '1.5.0'
+    }
+
   repositories {
     mavenCentral()
+  	jcenter()
   }
   dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
   }
 }
 
-
 apply plugin: 'kotlin'
+apply plugin: 'java'
 
-test {
-    testLogging.showStandardStreams = true
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+    
 }
 
-defaultTasks 'run'
-
-repositories {
-  mavenCentral()
-   jcenter()
-}
-
-dependencies {
-  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  compile 'com.github.kittinunf.fuel:fuel:1.12.1'
-  compile 'com.github.kittinunf.fuel:fuel-gson:1.12.1'
-  compile 'uy.kohesive.klutter:klutter-core:2.3.2'
-  compile 'io.github.microutils:kotlin-logging:1.4.9'
-  compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5'
-  testCompile 'junit:junit:4.11'
-  testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-  testCompile 'org.slf4j:slf4j-simple:1.7.5'
-  
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
 }
 
 task wrapper(type: Wrapper) {
