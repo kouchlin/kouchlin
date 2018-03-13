@@ -1,3 +1,5 @@
+package org.kouchlin.test
+
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.kouchlin.CouchDB

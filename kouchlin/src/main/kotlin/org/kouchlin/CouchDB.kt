@@ -5,11 +5,11 @@ import com.github.kittinunf.fuel.httpGet
 import mu.KotlinLogging
 import org.kouchlin.auth.BasicAuthentication
 import org.kouchlin.domain.DBUpdates
-import org.kouchlin.util.DeserializerHelper
-import org.kouchlin.util.DummyDeserializerHelper
 import org.kouchlin.util.Feed
 import org.kouchlin.util.Version
 import org.kouchlin.util.configureAuthentication
+import org.kouchlin.util.JsonAdapter
+import org.kouchlin.util.DummyJsonAdapter
 
 private val logger = KotlinLogging.logger {}
 
@@ -22,7 +22,7 @@ internal const val DBUPDATES_ENDPOINT = "_db_updates";
 class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = null) {
 
 	companion object {
-		var deserializer : DeserializerHelper = DummyDeserializerHelper()
+		var deserializer: JsonAdapter = DummyJsonAdapter()
 	}
 
 	init {
@@ -55,7 +55,7 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 		val (request, _, result) = DBUPDATES_ENDPOINT.httpGet(parameters)
 				.configureAuthentication(this)
 				.responseObject(deserializer.deserializeDBUpdates())
-		
+
 		logger.info(request.cUrlString())
 		return result.component1()
 	}

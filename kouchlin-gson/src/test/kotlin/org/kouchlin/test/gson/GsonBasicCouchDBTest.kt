@@ -1,3 +1,5 @@
+package org.kouchlin.test.gson
+
 import org.junit.Test
 import org.kouchlin.util.STATUS
 

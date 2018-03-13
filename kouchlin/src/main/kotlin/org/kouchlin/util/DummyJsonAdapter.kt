@@ -5,7 +5,7 @@ import org.kouchlin.domain.DBUpdates
 import org.kouchlin.domain.DBInfo
 import java.io.Reader
 
-class DummyDeserializerHelper : DeserializerHelper {
+class DummyJsonAdapter : JsonAdapter {
 	override fun <T : Any> deserialize(c: Class<T>): ResponseDeserializable<T> = object : ResponseDeserializable<T> {
 		override fun deserialize(reader: Reader): T {
 			throw UnsupportedOperationException()

@@ -5,11 +5,11 @@ import com.github.kittinunf.fuel.jackson.jacksonDeserializerOf
 import com.github.kittinunf.fuel.jackson.mapper
 import org.kouchlin.jackson.domain.JacksonDBInfo
 import org.kouchlin.jackson.domain.JacksonDBUpdates
-import org.kouchlin.util.DeserializerHelper
+import org.kouchlin.util.JsonAdapter
 import java.io.InputStream
 import java.io.Reader
 
-class JacksonDeserializerHelper : DeserializerHelper {
+class JacksonJsonAdapter : JsonAdapter {
 	override fun <T : Any> deserialize(c: Class<T>): ResponseDeserializable<T> = object : ResponseDeserializable<T> {
 		override fun deserialize(reader: Reader): T? {
 			return mapper.readValue(reader, c)
@@ -30,6 +30,6 @@ class JacksonDeserializerHelper : DeserializerHelper {
 
 	override fun deserializeDBUpdates() = jacksonDeserializerOf<JacksonDBUpdates>()
 	override fun deserializeDBInfo() = jacksonDeserializerOf<JacksonDBInfo>()
-	
+
 	override fun serialize(entity: Any): String = mapper.writeValueAsString(entity)
 }

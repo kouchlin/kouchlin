@@ -1,7 +1,9 @@
+package org.kouchlin.test.gson
+
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.kouchlin.CouchDB
-import org.kouchlin.gson.GsonDeserializerHelper
+import org.kouchlin.gson.GsonJsonAdapter
 
 open class GsonCouchDBBaseTest {
 	companion object {
@@ -10,7 +12,7 @@ open class GsonCouchDBBaseTest {
 		@BeforeClass
 		@JvmStatic
 		fun setUpClass() {
-			CouchDB.deserializer = GsonDeserializerHelper()
+			CouchDB.deserializer = GsonJsonAdapter()
 			couchdb = CouchDB("http://localhost:5984")
 			couchdb.database("kouchlin-test-db").create()
 		}
