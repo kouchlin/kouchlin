@@ -1,7 +1,5 @@
 package org.kouchlin.test
 
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
 import org.kouchlin.util.Feed
 import org.kouchlin.util.STATUS

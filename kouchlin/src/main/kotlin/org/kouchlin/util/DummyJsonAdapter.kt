@@ -18,5 +18,9 @@ class DummyJsonAdapter : JsonAdapter {
 	override fun serialize(entity: Any): String {
 		throw UnsupportedOperationException()
 	}
+	
+	override fun findDocumentId(document: Any): Pair<String?, String?> {
+		throw UnsupportedOperationException()
+	}
 
 }

@@ -18,4 +18,14 @@ class GsonJsonAdapter : JsonAdapter {
 
 	override fun deserializeDBUpdates() = gsonDeserializerOf<GsonDBUpdates>()
 	override fun deserializeDBInfo() = gsonDeserializerOf<GsonDBInfo>()
+
+	override fun findDocumentId(document: Any): Pair<String?, String?> {
+		val jsonDocument = Gson().toJsonTree(document).asJsonObject
+		return Pair(jsonDocument.getAsJsonPrimitive("_id").asString, jsonDocument.getAsJsonPrimitive("_rev").asString)
+	}
+	
+//	fun setDocumentId(document: Any, id: String?, rev: String?): Any {
+//		val jsonDocument = Gson().toJsonTree(document).asJsonObject
+//		return Pair(jsonDocument.getAsJsonPrimitive("_id").asString, jsonDocument.getAsJsonPrimitive("_rev").asString)
+//	}
 }

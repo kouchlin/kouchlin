@@ -9,4 +9,5 @@ interface JsonAdapter {
 	fun deserializeDBUpdates(): ResponseDeserializable<DBUpdates>
 	fun deserializeDBInfo(): ResponseDeserializable<DBInfo>
 	fun serialize(entity: Any): String
+	fun findDocumentId(document: Any): Pair<String?, String?>
 }

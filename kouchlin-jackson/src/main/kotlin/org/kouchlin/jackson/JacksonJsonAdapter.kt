@@ -1,5 +1,6 @@
 package org.kouchlin.jackson
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.jackson.jacksonDeserializerOf
 import com.github.kittinunf.fuel.jackson.mapper
@@ -32,4 +33,13 @@ class JacksonJsonAdapter : JsonAdapter {
 	override fun deserializeDBInfo() = jacksonDeserializerOf<JacksonDBInfo>()
 
 	override fun serialize(entity: Any): String = mapper.writeValueAsString(entity)
+	
+	
+	override fun findDocumentId(document: Any): Pair<String?, String?> {
+		
+		val jsonNode : JsonNode = mapper.valueToTree(document);
+		val id = jsonNode.get("_id")?.toString()
+		val rev = jsonNode.get("_rev")?.toString()
+		return Pair(id,rev)
+	}
 }
