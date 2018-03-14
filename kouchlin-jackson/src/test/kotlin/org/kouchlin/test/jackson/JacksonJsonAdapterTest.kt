@@ -12,7 +12,7 @@ class JacksonJsonAdapterTest {
 	  val testDoc = DummyJson("id1","rev1","value")
 	
 	  val (id,rev) = adapter.findDocumentId(testDoc)	
-//	  assert(id=="id1")
-//	  assert(rev=="rev1")
+	  assert(id=="id1")
+	  assert(rev=="rev1")
 	}
 }

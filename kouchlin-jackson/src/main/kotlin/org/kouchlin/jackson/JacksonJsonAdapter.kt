@@ -38,8 +38,8 @@ class JacksonJsonAdapter : JsonAdapter {
 	override fun findDocumentId(document: Any): Pair<String?, String?> {
 		
 		val jsonNode : JsonNode = mapper.valueToTree(document);
-		val id = jsonNode.get("_id")?.toString()
-		val rev = jsonNode.get("_rev")?.toString()
+		val id = jsonNode.get("_id")?.asText()
+		val rev = jsonNode.get("_rev")?.asText()
 		return Pair(id,rev)
 	}
 }
