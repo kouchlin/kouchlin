@@ -52,7 +52,7 @@ WIP: A Kotlin client for CouchDB
 |----------------------------------------------|--------|--------------------------|
 | /db                                          | POST   | :heavy_check_mark:       |
 | /db/doc                                      | HEAD   | :heavy_check_mark:       |
-| /db/doc                                      | GET    | :hourglass_flowing_sand: |
+| /db/doc                                      | GET    | :heavy_check_mark:       |
 | /db/doc                                      | PUT    | :heavy_check_mark:       |
 | /db/doc                                      | DELETE | :heavy_check_mark:       |
 | /db/doc                                      | COPY   | :heavy_multiplication_x: |

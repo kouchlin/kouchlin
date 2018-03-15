@@ -18,26 +18,26 @@ class JacksonCouchDBDocumentCRUDTest : JacksonCouchDBBaseTest() {
 		assert(status == STATUS.NOT_FOUND)
 	}
 
-	@Test
-	fun putDocTest() {
-		var database = couchdb.database("kouchlin-test-db")
-		val doc = """{
-					"a":1
-					}"""
-		var (_, _, status) = database.document("test").save(content = doc)
+//	@Test
+//	fun putDocTest() {
+//		var database = couchdb.database("kouchlin-test-db")
+//		val doc = """{
+//					"a":1
+//					}"""
+//		var (_, _, status) = database.document("test").save(content = doc)
+//
+//		//assert(status == STATUS.NOT_FOUND)
+//	}
 
-		//assert(status == STATUS.NOT_FOUND)
-	}
-
-	@Test
-	fun putDocTest2() {
-		var database = couchdb.database("kouchlin-test-db")
-		val doc = """{
-					"a":1
-					}"""
-		var (_, _, status) = database.document().save(content = doc)
-
-		//assert(status == STATUS.NOT_FOUND)
-	}
+//	@Test
+//	fun putDocTest2() {
+//		var database = couchdb.database("kouchlin-test-db")
+//		val doc = """{
+//					"a":1
+//					}"""
+//		var (_, _, status) = database.document().save(content = doc)
+//
+//		//assert(status == STATUS.NOT_FOUND)
+//	}
 
 }

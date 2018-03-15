@@ -11,6 +11,10 @@ class DummyJsonAdapter : JsonAdapter {
 			throw UnsupportedOperationException()
 		}
 	}
+	
+	override fun <T:Any> deserialize(content:String,c: Class<T>): T  {
+		throw UnsupportedOperationException()
+	}
 
 	override fun deserializeDBUpdates() = deserialize(DBUpdates::class.java)
 	override fun deserializeDBInfo() = deserialize(DBInfo::class.java)
@@ -18,9 +22,16 @@ class DummyJsonAdapter : JsonAdapter {
 	override fun serialize(entity: Any): String {
 		throw UnsupportedOperationException()
 	}
-	
-	override fun findDocumentId(document: Any): Pair<String?, String?> {
+
+	override fun findDocumentIdRev(document: Any): Triple<String?, String?, String?> {
 		throw UnsupportedOperationException()
 	}
 
+	override fun appendDocumentIdRev(document: Any, id: String?, rev: String?): String {
+		throw UnsupportedOperationException()
+	}
+	
+	override fun deleteDocumentIdRev(document: Any): Triple<String?, String?, String?> {
+		throw UnsupportedOperationException()
+	}
 }

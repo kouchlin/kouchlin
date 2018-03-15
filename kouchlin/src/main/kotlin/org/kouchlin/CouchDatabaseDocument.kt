@@ -70,7 +70,6 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 				.configureAuthentication(db.server)
 				.header(headers)
 
-
 		val (_, response, result) = if (String::class.java is T)
 			request.responseString()
 		else
@@ -85,15 +84,15 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 		val headers = configureHeaders(contentType = APPLICATION_JSON)
 		val parameters = configureParameters(batch = batch)
 
-		val jsonContent = when (content) {
-			is String -> content
-			else -> CouchDB.adapter.serialize(content)
+		val (docId, docRev, jsonContent) = CouchDB.adapter.deleteDocumentIdRev(content)
+		if (docId != null || docRev == null) {
+			logger.warn("doc id $docId and doc rev $docRev are ignored")
 		}
 
 		val (request, response, result) = documentURI.httpPost(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
-				.body(jsonContent)
+				.body(jsonContent!!)
 				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
 		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
@@ -103,19 +102,25 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 
 	internal fun saveWithPut(rev: String? = null, batch: Boolean? = null, newEdits: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
 		val headers = configureHeaders(contentType = APPLICATION_JSON)
-		val parameters = configureParameters(rev = rev,
+
+		val (docId, docRev, jsonContent) = CouchDB.adapter.deleteDocumentIdRev(content)
+
+		if (docId != null && id != docId) {
+			logger.warn("Document Id $docId included in the document is overriden by parameter $id")
+		}
+
+		if (docId == null && id == null) {
+
+		}
+
+		val parameters = configureParameters(rev = rev ?: docRev,
 				batch = batch,
 				newEdits = newEdits)
-
-		val jsonContent = when (content) {
-			is String -> content
-			else -> CouchDB.adapter.serialize(content)
-		}
 
 		val (request, response, result) = documentURI.httpPut(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
-				.body(jsonContent)
+				.body(jsonContent!!)
 				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
 		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
@@ -124,14 +129,16 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 	}
 
 	fun save(rev: String? = null, batch: Boolean? = null, newEdits: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
-		if (id != null) {
+		val (docId, _, _) = CouchDB.adapter.findDocumentIdRev(content)
+		if (id != null || docId != null) {
 			return saveWithPut(rev, batch, newEdits, content)
 		} else {
+			assert(rev == null)
 			return saveWithPost(batch, content)
 		}
 	}
 
-	fun delete(rev: String? = null, batch: Boolean? = null, fullCommit: Boolean? = null): Triple<SaveResponse?, String?, STATUS> {
+	fun delete(rev: String, batch: Boolean? = null, fullCommit: Boolean? = null): Triple<SaveResponse?, String?, STATUS> {
 		val headers = configureHeaders(fullCommit = fullCommit)
 		val parameters = configureParameters(rev = rev, batch = batch)
 
@@ -141,7 +148,7 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
 		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
-		
+
 		return Triple(result.component1(), responseEtag, response.toStatus())
 	}
 
