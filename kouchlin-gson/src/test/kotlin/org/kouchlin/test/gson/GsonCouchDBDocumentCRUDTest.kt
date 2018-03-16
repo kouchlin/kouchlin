@@ -54,7 +54,7 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 		assert(status == STATUS.CREATED)
 
 		val (result,etag,status2) = database.allDocs()
-		assert(result?.rows!!.size>0)
+		assert(result?.rows!!.isNotEmpty())
 	}
 	
 }

@@ -21,7 +21,7 @@ private val logger = KotlinLogging.logger {}
 
 class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val rev: String? = null) {
 
-	val documentURI = "${db.dbName}/${id.orEmpty()}"
+	private val documentURI = "${db.dbName}/${id.orEmpty()}"
 
 	fun exists(etag: String? = null): Triple<Int?, String?, STATUS> {
 		val headers = configureHeaders(etag = etag)
@@ -80,16 +80,15 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 		return Triple(result.component1() as T?, responseEtag, response.toStatus())
 	}
 
-	internal fun saveWithPost(batch: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
+	private fun saveWithPost(batch: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
 		val headers = configureHeaders(contentType = APPLICATION_JSON)
 		val parameters = configureParameters(batch = batch)
 
 		val (docId, docRev, jsonContent) = CouchDB.adapter.deleteDocumentIdRev(content)
-		if (docId != null || docRev == null) {
-			logger.warn("doc id $docId and doc rev $docRev are ignored")
-		}
+		docId?.let{logger.warn("Doc rev $docId is ignored")}
+		docRev?.let{logger.warn("Doc rev $docRev is ignored")}
 
-		val (request, response, result) = documentURI.httpPost(parameters)
+		val (request, response, result) = db.dbName.httpPost(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
 				.body(jsonContent!!)
@@ -100,24 +99,25 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
 		return Triple(result.component1(), responseEtag, response.toStatus())
 	}
 
-	internal fun saveWithPut(rev: String? = null, batch: Boolean? = null, newEdits: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
+	private fun saveWithPut(rev: String? = null, batch: Boolean? = null, newEdits: Boolean? = null, content: Any): Triple<SaveResponse?, String?, STATUS> {
 		val headers = configureHeaders(contentType = APPLICATION_JSON)
 
 		val (docId, docRev, jsonContent) = CouchDB.adapter.deleteDocumentIdRev(content)
 
-		if (docId != null && id != docId) {
-			logger.warn("Document Id $docId included in the document is overriden by parameter $id")
+		if (docId == null && id == null) {
+			throw IllegalArgumentException("Document id should be provided")
 		}
 
-		if (docId == null && id == null) {
-
+		if (docId != null && id !=null && id != docId) {
+			logger.warn("Document Id $docId included in the document is overriden by parameter $id")
 		}
 
 		val parameters = configureParameters(rev = rev ?: docRev,
 				batch = batch,
 				newEdits = newEdits)
 
-		val (request, response, result) = documentURI.httpPut(parameters)
+
+		val (request, response, result) = "${db.dbName}/${(id ?: docId).orEmpty()}".httpPut(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
 				.body(jsonContent!!)
