@@ -54,4 +54,17 @@ class JacksonCouchDBDocumentCRUDTest : JacksonCouchDBBaseTest() {
         var (_, _, status) = database.document().save(content = doc)
         assert(status == STATUS.CREATED)
     }
+	
+	@Test
+	fun allDocsTest() {
+		var database = couchdb.database("kouchlin-test-db")
+		val doc = """{
+					"a":1
+					}"""
+		var (_, _, status) = database.document("test-all-docs").save(content = doc)
+		assert(status == STATUS.CREATED)
+
+		val (result,etag,status2) = database.allDocs()
+		assert(result?.rows!!.size>0)
+	}
 }

@@ -81,5 +81,7 @@ class GsonBasicCouchDBTest : GsonCouchDBBaseTest() {
 		assert(database.delete() == STATUS.OK)
 		assert(database.exists() == STATUS.NOT_FOUND)
 	}
+	
+	
 
 }

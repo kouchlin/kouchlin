@@ -85,6 +85,57 @@ fun configureParameters(attachment: Boolean? = null,
 	return parameters;
 }
 
+
+fun configureViewParameters(conflicts: Boolean? = null,
+					  descending: Boolean? = null,
+					  endKey: String? = null,
+					  endKeyDocId: String? = null,
+					  group: Boolean? = null,
+					  groupLevel: Int? = null,
+					  includeDocs: Boolean? = null,
+					  attachments: Boolean? = null,
+					  attEncodingInfo: Boolean? = null,
+					  inclusiveEnd: Boolean? = null,
+					  key: String? = null,
+					  keys: List<String>? = null,
+					  limit: Int? = null,
+					  reduce: Boolean? = null,
+					  skip: Int? = null,
+					  sorted: Boolean? = null,
+					  stable: Boolean? = null,
+					  stale: String? = null, /* ok,update_after,false*/
+					  startKey: String? = null,
+					  startKeyDocId: String? = null,
+					  update: String? = null, /*true,false,lazy*/
+					  updateSeq: Boolean? = null): List<Pair<String, Any?>> {
+
+	var parameters: MutableList<Pair<String, Any?>> = mutableListOf()
+	descending?.let({ parameters.add("descending" to descending) })
+	attachments?.let({ parameters.add("attachments" to attachments) })
+	attEncodingInfo?.let({ parameters.add("att_encoding_info" to attEncodingInfo) })
+	conflicts?.let({ parameters.add("conflicts" to conflicts) })
+	endKey?.let({ parameters.add("endKey" to endKey) })
+	endKeyDocId?.let({ parameters.add("endkey_docid" to endKeyDocId) })
+	group?.let({ parameters.add("group" to group) })
+	groupLevel?.let({ parameters.add("group_level" to groupLevel) })
+	includeDocs?.let({ parameters.add("include_docs" to includeDocs) })
+	inclusiveEnd?.let({ parameters.add("inclusive_end" to inclusiveEnd) })
+	key?.let({ parameters.add("key" to key) })
+	keys?.let({ parameters.add("keys" to keys.joinToString(prefix = "[", postfix = "]", separator = ",", transform = { "\"$it\"" })) })
+	limit?.let({parameters.add("limit" to limit) })
+	reduce?.let({ parameters.add("reduce" to reduce) })
+	skip?.let({ parameters.add("skip" to skip) })
+	sorted?.let({ parameters.add("sorted" to sorted) })
+	stable?.let({ parameters.add("stable" to stable) })
+	stale?.let({ parameters.add("stale" to stale) })
+	startKey?.let({ parameters.add("start_key" to startKey) })
+	startKeyDocId?.let({ parameters.add("startkey_docid" to startKeyDocId) })
+	update?.let({ parameters.add("update" to update) })
+	updateSeq?.let({ parameters.add("update_seq" to updateSeq) })
+	
+	return parameters;
+}
+
 fun configureAuthentication(server: CouchDB, request: Request): Request {
 	if (server.authentication != null) {
 		return request.authenticate(server.authentication.username, server.authentication.password)

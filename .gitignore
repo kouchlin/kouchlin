@@ -22,7 +22,6 @@ hs_err_pid*
 /bin/
 
 .DS_Store
-.idea/shelf
 /android.tests.dependencies
 /confluence/target
 /dependencies
@@ -55,3 +54,4 @@ build/
 .project
 .settings/
 .classpath
+local.properties
