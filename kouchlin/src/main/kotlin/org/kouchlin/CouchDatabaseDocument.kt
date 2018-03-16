@@ -21,7 +21,7 @@ private val logger = KotlinLogging.logger {}
 
 class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val rev: String? = null) {
 
-	private val documentURI = "${db.dbName}/${id.orEmpty()}"
+	val documentURI = "${db.dbName}/${id.orEmpty()}"
 
 	fun exists(etag: String? = null): Triple<Int?, String?, STATUS> {
 		val headers = configureHeaders(etag = etag)

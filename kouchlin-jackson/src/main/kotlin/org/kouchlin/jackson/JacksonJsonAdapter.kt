@@ -65,7 +65,7 @@ class JacksonJsonAdapter : JsonAdapter {
 
     override fun deleteDocumentIdRev(document: Any): Triple<String?, String?, String?> {
         val jsonNode: JsonNode = when (document) {
-            is String -> mapper.readTree(document as String)
+            is String -> mapper.readTree(document)
             else -> mapper.valueToTree(document);
         }
 
