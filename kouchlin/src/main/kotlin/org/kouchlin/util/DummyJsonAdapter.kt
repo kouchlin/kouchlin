@@ -12,6 +12,10 @@ class DummyJsonAdapter : JsonAdapter {
 		}
 	}
 	
+	override fun <T:Any> serializeBulkDocs(docs: List<T>, newEdits: Boolean?): String {
+		throw UnsupportedOperationException()
+	}
+	
 	override fun <T:Any> deserialize(content:String,c: Class<T>): T  {
 		throw UnsupportedOperationException()
 	}

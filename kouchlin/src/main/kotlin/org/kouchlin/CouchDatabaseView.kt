@@ -22,7 +22,7 @@ class CouchDatabaseView(val db: CouchDatabase, val view: String) {
 		viewUri = "${db.dbName}/$viewPath"
 	}
 
-	inline fun < E, reified T : ViewResult<ViewResultRow<E>>> get(conflicts: Boolean? = null,
+	inline fun < V,D, reified T : ViewResult<ViewResultRow<V,D>>> get(conflicts: Boolean? = null,
 											   descending: Boolean? = null,
 											   endKey: String? = null,
 											   endKeyDocId: String? = null,

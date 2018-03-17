@@ -29,7 +29,7 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 
 		var (size, etag, status2) = database.document("test").exists()
 		assert(status2 == STATUS.OK)
-		assert((size ?: 0) > 0) 
+		assert((size ?: 0) > 0)
 		assert(etag != null)
 	}
 
@@ -45,6 +45,22 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 	}
 
 	@Test
+	fun putDocTestFromObject() {
+		var database = couchdb.database("kouchlin-test-db")
+		val doc = DummyJson(id = "test_with_id", aprop = "value")
+		var (_, _, status) = database.document().save(content = doc)
+		assert(status == STATUS.CREATED)
+	}
+
+	@Test
+	fun postDocTestFromObject() {
+		var database = couchdb.database("kouchlin-test-db")
+		val doc = DummyJson(aprop = "value")
+		var (_, _, status) = database.document().save(content = doc)
+		assert(status == STATUS.CREATED)
+	}
+
+	@Test
 	fun allDocsTest() {
 		var database = couchdb.database("kouchlin-test-db")
 		val doc = """{
@@ -53,8 +69,21 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 		var (_, _, status) = database.document("test-all-docs").save(content = doc)
 		assert(status == STATUS.CREATED)
 
-		val (result,etag,status2) = database.allDocs()
+		val (result, etag, status2) = database.allDocs<Any>()
 		assert(result?.rows!!.isNotEmpty())
 	}
-	
+
+	@Test
+	fun bulkDocsTest() {
+		var database = couchdb.database("kouchlin-test-db")
+		
+		val doc1 = DummyJson(id = "test_with_id1", aprop = "value")
+		val doc2 = DummyJson(id = "test_with_id2", aprop = "value")
+		val doc3 = DummyJson(id = "test_with_id3", aprop = "value")
+		
+		val docs = listOf(doc1,doc2,doc3)
+		val (result,status) =  database.bulkDocs(docs,true)
+		assert(status == STATUS.CREATED)
+		assert(result?.size == 3)	
+	}
 }

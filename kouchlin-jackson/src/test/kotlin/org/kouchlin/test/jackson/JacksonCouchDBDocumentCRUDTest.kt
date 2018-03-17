@@ -67,4 +67,17 @@ class JacksonCouchDBDocumentCRUDTest : JacksonCouchDBBaseTest() {
 		val (result,etag,status2) = database.allDocs()
 		assert(result?.rows!!.isNotEmpty())
 	}
+		@Test
+	fun bulkDocsTest() {
+		var database = couchdb.database("kouchlin-test-db")
+		
+		val doc1 = DummyJson(id = "test_with_id1", aprop = "value")
+		val doc2 = DummyJson(id = "test_with_id2", aprop = "value")
+		val doc3 = DummyJson(id = "test_with_id3", aprop = "value")
+		
+		val docs = listOf(doc1,doc2,doc3)
+		val (result,status) =  database.bulkDocs(docs)
+		assert(status == STATUS.CREATED)
+		assert(result?.size == 3)	
+	}
 }

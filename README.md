@@ -33,9 +33,9 @@ WIP: A Kotlin client for CouchDB
 | /db                                          | DELETE | :heavy_check_mark:       |
 | /db/_compact                                 | POST   | :heavy_check_mark:       |
 | /db/_ensure_full_commit                      | POST   | :heavy_check_mark:       |
-| /db/_all_docs                                | GET    | :hourglass_flowing_sand: |
+| /db/_all_docs                                | GET    | :heavy_check_mark: |
 | /db/_all_docs                                | POST   | :hourglass_flowing_sand: |
-| /db/_bulk_docs                               | POST   | :hourglass_flowing_sand: |
+| /db/_bulk_docs                               | POST   | :heavy_check_mark: |
 | /db/_changes                                 | GET    | :hourglass_flowing_sand: |
 | /db/_changes                                 | POST   | :hourglass_flowing_sand: |
 | /db/_find                                    | POST   | :hourglass_flowing_sand: |

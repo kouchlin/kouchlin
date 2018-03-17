@@ -12,6 +12,7 @@ import org.kouchlin.jackson.domain.JacksonDBUpdates
 import org.kouchlin.util.JsonAdapter
 import java.io.InputStream
 import java.io.Reader
+import org.kouchlin.jackson.domain.JacksonBulkDocs
 
 class JacksonJsonAdapter : JsonAdapter {
 
@@ -43,8 +44,7 @@ class JacksonJsonAdapter : JsonAdapter {
     override fun deserializeDBInfo() = jacksonDeserializerOf<JacksonDBInfo>()
 
     override fun serialize(entity: Any): String = mapper.writeValueAsString(entity)
-
-
+    override fun <T:Any> serializeBulkDocs(docs: List<T>, newEdits: Boolean?): String = serialize(JacksonBulkDocs(docs,newEdits))
     override fun findDocumentIdRev(document: Any): Triple<String?, String?, String?> {
 
         val jsonNode: JsonNode = mapper.valueToTree(document);

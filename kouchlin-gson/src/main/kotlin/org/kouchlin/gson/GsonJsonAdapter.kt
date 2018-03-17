@@ -8,6 +8,8 @@ import org.kouchlin.gson.domain.GsonDBInfo
 import org.kouchlin.gson.domain.GsonDBUpdates
 import org.kouchlin.util.JsonAdapter
 import java.io.Reader
+import org.kouchlin.gson.domain.GsonBulkDocs
+import org.kouchlin.domain.BulkDocs
 
 class GsonJsonAdapter : JsonAdapter {
 	override fun <T : Any> deserialize(c: Class<T>): ResponseDeserializable<T> = object : ResponseDeserializable<T> {
@@ -18,9 +20,10 @@ class GsonJsonAdapter : JsonAdapter {
 
 	override fun serialize(entity: Any): String = Gson().toJson(entity)
 
-
+	override fun <T : Any> serializeBulkDocs(docs: List<T>, newEdits:Boolean?): String = serialize( GsonBulkDocs(docs,newEdits))
 	override fun deserializeDBUpdates() = gsonDeserializerOf<GsonDBUpdates>()
 	override fun deserializeDBInfo() = gsonDeserializerOf<GsonDBInfo>()
+
 
 	override fun findDocumentIdRev(document: Any): Triple<String?, String?, String?> {
 		val jsonDocument = when (document) {
