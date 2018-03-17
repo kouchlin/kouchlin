@@ -64,7 +64,7 @@ class JacksonCouchDBDocumentCRUDTest : JacksonCouchDBBaseTest() {
 		var (_, _, status) = database.document("test-all-docs").save(content = doc)
 		assert(status == STATUS.CREATED)
 
-		val (result,etag,status2) = database.allDocs()
+		val (result,etag,status2) = database.allDocs<Any>()
 		assert(result?.rows!!.isNotEmpty())
 	}
 		@Test
