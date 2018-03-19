@@ -47,7 +47,7 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 	@Test
 	fun putDocTestFromObject() {
 		var database = couchdb.database("kouchlin-test-db")
-		val doc = DummyJson(id = "test_with_id", aprop = "value")
+		val doc = DummyJson(id = "test_with_id", foo = "value")
 		var (_, _, status) = database.document().save(content = doc)
 		assert(status == STATUS.CREATED)
 	}
@@ -55,7 +55,7 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 	@Test
 	fun postDocTestFromObject() {
 		var database = couchdb.database("kouchlin-test-db")
-		val doc = DummyJson(aprop = "value")
+		val doc = DummyJson(foo = "value")
 		var (_, _, status) = database.document().save(content = doc)
 		assert(status == STATUS.CREATED)
 	}
@@ -76,14 +76,14 @@ class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
 	@Test
 	fun bulkDocsTest() {
 		var database = couchdb.database("kouchlin-test-db")
-		
-		val doc1 = DummyJson(id = "test_with_id1", aprop = "value")
-		val doc2 = DummyJson(id = "test_with_id2", aprop = "value")
-		val doc3 = DummyJson(id = "test_with_id3", aprop = "value")
-		
-		val docs = listOf(doc1,doc2,doc3)
-		val (result,status) =  database.bulkDocs(docs,true)
+
+		val doc1 = DummyJson(id = "test_with_id1", foo = "value")
+		val doc2 = DummyJson(id = "test_with_id2", foo = "value")
+		val doc3 = DummyJson(id = "test_with_id3", foo = "value")
+
+		val docs = listOf(doc1, doc2, doc3)
+		val (result, status) = database.bulkDocs(docs, true)
 		assert(status == STATUS.CREATED)
-		assert(result?.size == 3)	
+		assert(result?.size == 3)
 	}
 }

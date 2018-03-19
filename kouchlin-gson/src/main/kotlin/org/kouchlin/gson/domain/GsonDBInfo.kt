@@ -4,20 +4,19 @@ import com.google.gson.annotations.SerializedName
 import org.kouchlin.domain.Cluster
 import org.kouchlin.domain.DBInfo
 
-data class GsonDBInfo(@SerializedName("cluster") override val cluster: Cluster?,
-					  @SerializedName("compact_running") override val compactRunning: Boolean,
-					  @SerializedName("data_size") override val dataSize: Long,
-					  @SerializedName("db_name") override val dbName: String,
-					  @SerializedName("disk_format_version") override val diskFormatVersion: Int,
-					  @SerializedName("disk_size") override val diskSize: Long,
-					  @SerializedName("doc_count") override val docCount: Long,
-					  @SerializedName("doc_del_count") override val docDelCount: Long,
-					  @SerializedName("instance_start_time") override val instanceStartTime: Int,
-					  @SerializedName("purge_seq") override val purgeSeq: Long,
-					  @SerializedName("update_seq") override val updateSeq: String,
-					  @SerializedName("other.data_size") override val otherDataSize: Long,
-					  @SerializedName("sizes.active") override val activeSize: Long,
-					  @SerializedName("sizes.external") override val externalSize: Long,
-					  @SerializedName("sizes.file") override val fileSize: Long
-) : DBInfo(cluster, compactRunning, dataSize, dbName, diskFormatVersion, diskSize,
-		docCount, docDelCount, instanceStartTime, purgeSeq, updateSeq, otherDataSize, activeSize, externalSize, fileSize)
+class GsonDBInfo : DBInfo() {
+	@SerializedName("compact_running") override var compactRunning: Boolean? = null
+	@SerializedName("data_size") override var dataSize: Long? = null
+	@SerializedName("db_name") override var dbName: String? = null
+	@SerializedName("disk_format_version") override var diskFormatVersion: Int? = null
+	@SerializedName("disk_size") override var diskSize: Long? = null
+	@SerializedName("doc_count") override var docCount: Long? = null
+	@SerializedName("doc_del_count") override var docDelCount: Long? = null
+	@SerializedName("instance_start_time") override var instanceStartTime: Long? = null
+	@SerializedName("purge_seq") override var purgeSeq: Long? = null
+	@SerializedName("update_seq") override var updateSeq: String? = null
+	@SerializedName("other.data_size") override var otherDataSize: Long? = null
+	@SerializedName("sizes.active") override var activeSize: Long? = null
+	@SerializedName("sizes.external") override var externalSize: Long? = null
+	@SerializedName("sizes.file") override var fileSize: Long? = null
+}

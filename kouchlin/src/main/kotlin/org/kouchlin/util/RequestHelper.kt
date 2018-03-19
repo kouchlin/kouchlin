@@ -87,27 +87,27 @@ fun configureParameters(attachment: Boolean? = null,
 
 
 fun configureViewParameters(conflicts: Boolean? = null,
-					  descending: Boolean? = null,
-					  endKey: String? = null,
-					  endKeyDocId: String? = null,
-					  group: Boolean? = null,
-					  groupLevel: Int? = null,
-					  includeDocs: Boolean? = null,
-					  attachments: Boolean? = null,
-					  attEncodingInfo: Boolean? = null,
-					  inclusiveEnd: Boolean? = null,
-					  key: String? = null,
-					  keys: List<String>? = null,
-					  limit: Int? = null,
-					  reduce: Boolean? = null,
-					  skip: Int? = null,
-					  sorted: Boolean? = null,
-					  stable: Boolean? = null,
-					  stale: String? = null, /* ok,update_after,false*/
-					  startKey: String? = null,
-					  startKeyDocId: String? = null,
-					  update: String? = null, /*true,false,lazy*/
-					  updateSeq: Boolean? = null): List<Pair<String, Any?>> {
+							descending: Boolean? = null,
+							endKey: String? = null,
+							endKeyDocId: String? = null,
+							group: Boolean? = null,
+							groupLevel: Int? = null,
+							includeDocs: Boolean? = null,
+							attachments: Boolean? = null,
+							attEncodingInfo: Boolean? = null,
+							inclusiveEnd: Boolean? = null,
+							key: String? = null,
+							keys: List<String>? = null,
+							limit: Int? = null,
+							reduce: Boolean? = null,
+							skip: Int? = null,
+							sorted: Boolean? = null,
+							stable: Boolean? = null,
+							stale: String? = null, /* ok,update_after,false*/
+							startKey: String? = null,
+							startKeyDocId: String? = null,
+							update: String? = null, /*true,false,lazy*/
+							updateSeq: Boolean? = null): List<Pair<String, Any?>> {
 
 	var parameters: MutableList<Pair<String, Any?>> = mutableListOf()
 	descending?.let({ parameters.add("descending" to descending) })
@@ -122,7 +122,7 @@ fun configureViewParameters(conflicts: Boolean? = null,
 	inclusiveEnd?.let({ parameters.add("inclusive_end" to inclusiveEnd) })
 	key?.let({ parameters.add("key" to key) })
 	keys?.let({ parameters.add("keys" to keys.joinToString(prefix = "[", postfix = "]", separator = ",", transform = { "\"$it\"" })) })
-	limit?.let({parameters.add("limit" to limit) })
+	limit?.let({ parameters.add("limit" to limit) })
 	reduce?.let({ parameters.add("reduce" to reduce) })
 	skip?.let({ parameters.add("skip" to skip) })
 	sorted?.let({ parameters.add("sorted" to sorted) })
@@ -132,8 +132,44 @@ fun configureViewParameters(conflicts: Boolean? = null,
 	startKeyDocId?.let({ parameters.add("startkey_docid" to startKeyDocId) })
 	update?.let({ parameters.add("update" to update) })
 	updateSeq?.let({ parameters.add("update_seq" to updateSeq) })
-	
+
 	return parameters;
+}
+
+fun configureChangesParametes(docIds: List<String>? = null,
+							  conflicts: Boolean? = null,
+							  descending: Boolean? = null,
+							  feed: Feed?,
+							  filter: String? = null,
+							  heartbeat: Long? = null,
+							  includeDocs: Boolean? = null,
+							  attachments: Boolean? = null,
+							  attEncodingInfo: Boolean? = null,
+							  lastEventId: String? = null,
+							  limit: Long? = null,
+							  since: String? = null,
+							  style: String? = null,
+							  timeout: Long? = null,
+							  view: String? = null,
+							  seqInterval: Long? = null): List<Pair<String, Any?>> {
+	var parameters: MutableList<Pair<String, Any?>> = mutableListOf()
+	docIds?.let({ parameters.add("doc_ids" to docIds.joinToString(prefix = "[", postfix = "]", separator = ",", transform = { "\"$it\"" })) })
+	conflicts?.let({ parameters.add("conflicts" to conflicts) })
+	descending?.let({ parameters.add("descending" to descending) })
+	feed?.let({ parameters.add("feed" to feed) })
+	filter?.let({ parameters.add("filter" to filter) })
+	heartbeat?.let({ parameters.add("heartbeat" to heartbeat) })
+	includeDocs?.let({ parameters.add("include_docs" to includeDocs) })
+	attachments?.let({ parameters.add("attachments" to attachments) })
+	attEncodingInfo?.let({ parameters.add("attEncodingInfo" to attEncodingInfo) })
+	lastEventId?.let({ parameters.add("lastEventId" to lastEventId) })
+	limit?.let({ parameters.add("limit" to limit) })
+	since?.let({ parameters.add("since" to since) })
+	style?.let({ parameters.add("style" to style) })
+	timeout?.let({ parameters.add("timeout" to timeout) })
+	view?.let({ parameters.add("view" to view) })
+	seqInterval?.let({ parameters.add("seq_interval" to seqInterval) })
+	return parameters
 }
 
 fun configureAuthentication(server: CouchDB, request: Request): Request {

@@ -5,9 +5,10 @@ import org.kouchlin.domain.DBUpdates
 import org.kouchlin.domain.DBUpdatesResult
 
 
-data class GsonDBUpdatesResult(override @SerializedName("db_name") val dbName: String,
-							   override val type: String,
-							   override val seq: String) : DBUpdatesResult(dbName, type, seq) {}
+class GsonDBUpdatesResult : DBUpdatesResult() {
+	override @SerializedName("db_name") var dbName: String? = null
+}
 
-data class GsonDBUpdates(override val results: List<GsonDBUpdatesResult>,
-						 @SerializedName("last_seq") override val lastSeq: String) : DBUpdates(results, lastSeq) {}
+class GsonDBUpdates : DBUpdates() { 
+	@SerializedName("last_seq") override var lastSeq: String? = null
+}

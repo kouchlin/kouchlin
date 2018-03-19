@@ -1,6 +1,8 @@
 package org.kouchlin.domain
 
-open class BulkDocs<T>(@Transient open val docs: List<T>,
-					   @Transient open val newEdits: Boolean?=null)
+abstract class BulkDocs<T> {
+	var docs: List<T>? = null
+	abstract var newEdits: Boolean?
+}
 
 data class BulkDocsResult(val ok: Boolean, val id: String?, val rev: String?)  

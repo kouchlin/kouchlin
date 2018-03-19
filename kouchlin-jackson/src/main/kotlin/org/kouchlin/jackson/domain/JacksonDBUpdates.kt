@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.kouchlin.domain.DBUpdates
 import org.kouchlin.domain.DBUpdatesResult
 
-data class JacksonDBUpdatesResult(override @JsonProperty("db_name") val dbName: String,
-								  override val type: String,
-								  override val seq: String) : DBUpdatesResult(dbName, type, seq) {}
+class JacksonDBUpdatesResult : DBUpdatesResult() {
+	override @JsonProperty("db_name") var dbName: String? = null
+}
 
-data class JacksonDBUpdates(override val results: List<JacksonDBUpdatesResult>,
-							@JsonProperty("last_seq") override val lastSeq: String) : DBUpdates(results, lastSeq) {}
-
+class JacksonDBUpdates : DBUpdates() {
+	@JsonProperty("last_seq") override var lastSeq: String? = null
+}

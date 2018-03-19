@@ -21,6 +21,7 @@ open class GsonCouchDBBaseTest {
 		@JvmStatic
 		fun teardown() {
 			couchdb.database("kouchlin-test-db").delete()
+			couchdb.database("kouchlin-changes-test-db").delete()
 		}
 
 	}

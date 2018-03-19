@@ -2,19 +2,20 @@ package org.kouchlin.domain
 
 data class Cluster(val n: Int, val q: Int, val r: Int, val w: Int)
 
-open class DBInfo(@Transient open val cluster: Cluster?,
-				  @Transient open val compactRunning: Boolean,
-				  @Transient open val dataSize: Long,
-				  @Transient open val dbName: String,
-				  @Transient open val diskFormatVersion: Int,
-				  @Transient open val diskSize: Long,
-				  @Transient open val docCount: Long,
-				  @Transient open val docDelCount: Long,
-				  @Transient open val instanceStartTime: Int,
-				  @Transient open val purgeSeq: Long,
-				  @Transient open val updateSeq: String,
-				  @Transient open val otherDataSize: Long,
-				  @Transient open val activeSize: Long,
-				  @Transient open val externalSize: Long,
-				  @Transient open val fileSize: Long
-)
+abstract class DBInfo {
+	var cluster: Cluster? = null
+	abstract var compactRunning: Boolean?
+	abstract var dataSize: Long?
+	abstract var dbName: String?
+	abstract var diskFormatVersion: Int?
+	abstract var diskSize: Long?
+	abstract var docCount: Long?
+	abstract var docDelCount: Long?
+	abstract var instanceStartTime: Long?
+	abstract var purgeSeq: Long?
+	abstract var updateSeq: String?
+	abstract var otherDataSize: Long?
+	abstract var activeSize: Long?
+	abstract var externalSize: Long?
+	abstract var fileSize: Long?
+}

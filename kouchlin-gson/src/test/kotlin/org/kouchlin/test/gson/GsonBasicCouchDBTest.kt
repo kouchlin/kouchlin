@@ -23,9 +23,8 @@ class GsonBasicCouchDBTest : GsonCouchDBBaseTest() {
 
 	@Test
 	fun couchDBUpdatesTest() {
-		var updates = couchdb.dbUpdates()
-		updates = couchdb.dbUpdates("now")
-		assert(updates!!.results.size == 0);
+		var updates = couchdb.dbUpdates("now")
+		assert(updates!!.results!!.size == 0);
 	}
 
 //	@Test
@@ -81,7 +80,30 @@ class GsonBasicCouchDBTest : GsonCouchDBBaseTest() {
 		assert(database.delete() == STATUS.OK)
 		assert(database.exists() == STATUS.NOT_FOUND)
 	}
-	
-	
+
+	@Test
+	fun changesTest() {
+		var database = couchdb.database("kouchlin-changes-test-db")
+		assert(database.create() == STATUS.CREATED)
+
+		val doc1 = DummyJson(id = "test_with_id1", foo = "value")
+		val doc2 = DummyJson(id = "test_with_id2", foo = "value")
+		val doc3 = DummyJson(id = "test_with_id3", foo = "value")
+		val docs = listOf(doc1, doc2, doc3)
+		val (result, status) = database.bulkDocs(docs, true)
+		assert(status == STATUS.CREATED)
+		assert(result?.size == 3)
+
+		val (changes, etag, status2) = database.changes<DummyJson>(includeDocs = true)
+		assert(status2 == STATUS.OK)
+		assert(etag != null)
+		assert(changes!!.results!!.size == 3)
+//		assert(changes.results!!.first().doc?.id =="test_with_id1")
+//		assert(changes.results!!.first().doc is DummyJson)
+
+		val (_, _, status3)  = database.changes<DummyJson>(etag = etag)
+		assert(status3 == STATUS.NOT_MODIFIED)
+
+	}
 
 }

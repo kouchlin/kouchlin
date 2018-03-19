@@ -60,7 +60,11 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 		return result.component1()
 	}
 
-	fun dbUpdates(feed: Feed, timeout: Int? = null, heartbeat: Int? = null, since: String? = null, action: (DBUpdates?) -> Unit) {
+	fun dbUpdates(feed: Feed,
+				  timeout: Int? = null,
+				  heartbeat: Int? = null,
+				  since: String? = null,
+				  action: (DBUpdates?) -> Unit) {
 		var parameters: MutableList<Pair<String, Any?>> = mutableListOf("feed" to feed.value)
 		timeout?.let { parameters.add("timeout" to timeout) }
 		heartbeat?.let { parameters.add("heartbeat" to heartbeat) }

@@ -1,7 +1,12 @@
 package org.kouchlin.domain
 
-open class DBUpdatesResult(@Transient open val dbName:String,
-						   @Transient open val type:String,
-						   @Transient open val seq: String)
+abstract class DBUpdatesResult {
+	abstract var dbName: String?
+	var type: String? = null
+	var seq: String? = null
+}
 
-open class DBUpdates(@Transient open val results: List<DBUpdatesResult>, @Transient open val lastSeq:String) {}
+abstract class DBUpdates {
+	var results: List<DBUpdatesResult>? = null
+	abstract var lastSeq: String?
+}

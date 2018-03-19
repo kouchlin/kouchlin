@@ -23,9 +23,8 @@ class JacksonBasicCouchDBTest : JacksonCouchDBBaseTest() {
 
 	@Test
 	fun couchDBUpdatesTest() {
-		var updates = couchdb.dbUpdates()
-		updates = couchdb.dbUpdates("now")
-		assert(updates!!.results.size == 0);
+		var updates = couchdb.dbUpdates("now")
+		assert(updates!!.results!!.size == 0);
 	}
 
 

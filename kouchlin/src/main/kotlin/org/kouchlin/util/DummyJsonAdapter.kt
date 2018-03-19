@@ -1,8 +1,9 @@
 package org.kouchlin.util
 
 import com.github.kittinunf.fuel.core.ResponseDeserializable
-import org.kouchlin.domain.DBUpdates
+import org.kouchlin.domain.Changes
 import org.kouchlin.domain.DBInfo
+import org.kouchlin.domain.DBUpdates
 import java.io.Reader
 
 class DummyJsonAdapter : JsonAdapter {
@@ -11,17 +12,18 @@ class DummyJsonAdapter : JsonAdapter {
 			throw UnsupportedOperationException()
 		}
 	}
-	
-	override fun <T:Any> serializeBulkDocs(docs: List<T>, newEdits: Boolean?): String {
+
+	override fun <T : Any> serializeBulkDocs(docs: List<T>, newEdits: Boolean?): String {
 		throw UnsupportedOperationException()
 	}
-	
-	override fun <T:Any> deserialize(content:String,c: Class<T>): T  {
+
+	override fun <T : Any> deserialize(content: String, c: Class<T>): T {
 		throw UnsupportedOperationException()
 	}
 
 	override fun deserializeDBUpdates() = deserialize(DBUpdates::class.java)
 	override fun deserializeDBInfo() = deserialize(DBInfo::class.java)
+	override fun <T : Any> deserializeChanges() = deserialize(Changes::class.java as Class<Changes<T>>)
 
 	override fun serialize(entity: Any): String {
 		throw UnsupportedOperationException()
@@ -34,7 +36,7 @@ class DummyJsonAdapter : JsonAdapter {
 	override fun appendDocumentIdRev(document: Any, id: String?, rev: String?): String {
 		throw UnsupportedOperationException()
 	}
-	
+
 	override fun deleteDocumentIdRev(document: Any): Triple<String?, String?, String?> {
 		throw UnsupportedOperationException()
 	}
