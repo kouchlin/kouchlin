@@ -38,6 +38,12 @@ WIP: A Kotlin client for CouchDB
 | /db/_bulk_docs                               | POST   | :heavy_check_mark:       |
 | /db/_changes                                 | GET    | :heavy_check_mark:       |
 | /db/_changes                                 | POST   | :hourglass_flowing_sand: |
+
+
+#### Find
+
+| Endpoint                                     | Method | Status                   |
+|----------------------------------------------|--------|--------------------------|
 | /db/_find                                    | POST   | :hourglass_flowing_sand: |
 | /db/_explain                                 | POST   | :hourglass_flowing_sand: |
 | /db/_index                                   | POST   | :hourglass_flowing_sand: |
@@ -64,3 +70,6 @@ WIP: A Kotlin client for CouchDB
 | /db/doc/attachment                           | GET    | :hourglass_flowing_sand: |
 | /db/doc/attachment                           | PUT    | :hourglass_flowing_sand: |
 | /db/doc/attachment                           | DELETE | :hourglass_flowing_sand: |
+
+#### Design
+*Pending*
