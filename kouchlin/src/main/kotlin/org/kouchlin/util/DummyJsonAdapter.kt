@@ -4,6 +4,8 @@ import com.github.kittinunf.fuel.core.ResponseDeserializable
 import org.kouchlin.domain.Changes
 import org.kouchlin.domain.DBInfo
 import org.kouchlin.domain.DBUpdates
+import org.kouchlin.domain.ViewResult
+import org.kouchlin.domain.ViewResultRow
 import java.io.Reader
 
 class DummyJsonAdapter : JsonAdapter {
@@ -23,7 +25,9 @@ class DummyJsonAdapter : JsonAdapter {
 
 	override fun deserializeDBUpdates() = deserialize(DBUpdates::class.java)
 	override fun deserializeDBInfo() = deserialize(DBInfo::class.java)
-	override fun <T : Any> deserializeChanges() = deserialize(Changes::class.java as Class<Changes<T>>)
+	override fun <T : Any> deserializeChanges(docType: Class<T>?) = deserialize(Changes::class.java as Class<Changes<T>>)
+	override fun <V, T> deserializeViewResults(resultType: Class<V>?, docType: Class<T>?):
+			ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> = deserialize(ViewResult::class.java as Class<ViewResult<ViewResultRow<V, T>>>)
 
 	override fun serialize(entity: Any): String {
 		throw UnsupportedOperationException()

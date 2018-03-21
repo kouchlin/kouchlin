@@ -33,7 +33,7 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 	internal var compact_uri = "$dbName$COMPACT_ENDPOINT";
 	internal var ensureFullCommitUri = "$dbName$ENSURE_FULL_COMMIT_ENDPOINT"
 	internal var bulkDocsUri = "$dbName$BULK_DOCS_ENDPOINT"
-	 var changesUri = "$dbName$CHANGES_ENDPOINT"
+	var changesUri = "$dbName$CHANGES_ENDPOINT"
 
 	fun exists(): STATUS {
 		val (_, response, _) = Fuel.head(dbName).configureAuthentication(server).response();
@@ -78,31 +78,31 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 		return response.statusCode == 201
 	}
 
-	fun <T> allDocs(conflicts: Boolean? = null,
-					descending: Boolean? = null,
-					endKey: String? = null,
-					endKeyDocId: String? = null,
-					group: Boolean? = null,
-					groupLevel: Int? = null,
-					includeDocs: Boolean? = null,
-					attachments: Boolean? = null,
-					attEncodingInfo: Boolean? = null,
-					inclusiveEnd: Boolean? = null,
-					key: String? = null,
-					keys: List<String>? = null,
-					limit: Int? = null,
-					reduce: Boolean? = null,
-					skip: Int? = null,
-					sorted: Boolean? = null,
-					stable: Boolean? = null,
-					stale: String? = null, /* ok,update_after,false*/
-					startKey: String? = null,
-					startKeyDocId: String? = null,
-					update: String? = null, /*true,false,lazy*/
-					updateSeq: Boolean? = null
-	): Triple<ViewResult<ViewResultRow<ViewRevRow, T>>?, String?, STATUS?> {
+	inline fun <reified T> allDocs(conflicts: Boolean? = null,
+								   descending: Boolean? = null,
+								   endKey: String? = null,
+								   endKeyDocId: String? = null,
+								   group: Boolean? = null,
+								   groupLevel: Int? = null,
+								   includeDocs: Boolean? = null,
+								   attachments: Boolean? = null,
+								   attEncodingInfo: Boolean? = null,
+								   inclusiveEnd: Boolean? = null,
+								   key: String? = null,
+								   keys: List<String>? = null,
+								   limit: Int? = null,
+								   reduce: Boolean? = null,
+								   skip: Int? = null,
+								   sorted: Boolean? = null,
+								   stable: Boolean? = null,
+								   stale: String? = null, /* ok,update_after,false*/
+								   startKey: String? = null,
+								   startKeyDocId: String? = null,
+								   update: String? = null, /*true,false,lazy*/
+								   updateSeq: Boolean? = null
+	): Pair<ViewResult<ViewResultRow<ViewRevRow, T>>?, STATUS?> {
 
-		return CouchDatabaseView(this, "_all_docs").get<ViewRevRow, T, ViewResult<ViewResultRow<ViewRevRow, T>>>(conflicts = conflicts,
+		return CouchDatabaseView(this, "_all_docs").get<ViewRevRow, T>(conflicts = conflicts,
 				descending = descending,
 				endKey = endKey,
 				endKeyDocId = endKeyDocId,
@@ -127,31 +127,31 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 
 	}
 
-	fun <T> designDocs(conflicts: Boolean? = null,
-					   descending: Boolean? = null,
-					   endKey: String? = null,
-					   endKeyDocId: String? = null,
-					   group: Boolean? = null,
-					   groupLevel: Int? = null,
-					   includeDocs: Boolean? = null,
-					   attachments: Boolean? = null,
-					   attEncodingInfo: Boolean? = null,
-					   inclusiveEnd: Boolean? = null,
-					   key: String? = null,
-					   keys: List<String>? = null,
-					   limit: Int? = null,
-					   reduce: Boolean? = null,
-					   skip: Int? = null,
-					   sorted: Boolean? = null,
-					   stable: Boolean? = null,
-					   stale: String? = null, /* ok,update_after,false*/
-					   startKey: String? = null,
-					   startKeyDocId: String? = null,
-					   update: String? = null, /*true,false,lazy*/
-					   updateSeq: Boolean? = null
-	): Triple<ViewResult<ViewResultRow<ViewRevRow, T>>?, String?, STATUS?> {
+	inline fun <reified T> designDocs(conflicts: Boolean? = null,
+									  descending: Boolean? = null,
+									  endKey: String? = null,
+									  endKeyDocId: String? = null,
+									  group: Boolean? = null,
+									  groupLevel: Int? = null,
+									  includeDocs: Boolean? = null,
+									  attachments: Boolean? = null,
+									  attEncodingInfo: Boolean? = null,
+									  inclusiveEnd: Boolean? = null,
+									  key: String? = null,
+									  keys: List<String>? = null,
+									  limit: Int? = null,
+									  reduce: Boolean? = null,
+									  skip: Int? = null,
+									  sorted: Boolean? = null,
+									  stable: Boolean? = null,
+									  stale: String? = null, /* ok,update_after,false*/
+									  startKey: String? = null,
+									  startKeyDocId: String? = null,
+									  update: String? = null, /*true,false,lazy*/
+									  updateSeq: Boolean? = null
+	): Pair<ViewResult<ViewResultRow<ViewRevRow, T>>?, STATUS?> {
 
-		return CouchDatabaseView(this, "_design_docs").get<ViewRevRow, T, ViewResult<ViewResultRow<ViewRevRow, T>>>(conflicts = conflicts,
+		return CouchDatabaseView(this, "_design_docs").get<ViewRevRow, T>(conflicts = conflicts,
 				descending = descending,
 				endKey = endKey,
 				endKeyDocId = endKeyDocId,
@@ -189,22 +189,22 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 	}
 
 	inline fun <reified T : Any> changes(docIds: List<String>? = null,
-						  conflicts: Boolean? = null,
-						  descending: Boolean? = null,
-						  feed: Feed?=null,
-						  filter: String? = null,
-						  heartbeat: Long? = null,
-						  includeDocs: Boolean? = null,
-						  attachments: Boolean? = null,
-						  attEncodingInfo: Boolean? = null,
-						  lastEventId: String? = null,
-						  limit: Long? = null,
-						  since: String? = null,
-						  style: String? = null,
-						  timeout: Long? = null,
-						  view: String? = null,
-						  seqInterval:Long?=null,
-						  etag: String? = null): Triple<Changes<T>?, String?, STATUS?> {
+										 conflicts: Boolean? = null,
+										 descending: Boolean? = null,
+										 feed: Feed? = null,
+										 filter: String? = null,
+										 heartbeat: Long? = null,
+										 includeDocs: Boolean? = null,
+										 attachments: Boolean? = null,
+										 attEncodingInfo: Boolean? = null,
+										 lastEventId: String? = null,
+										 limit: Long? = null,
+										 since: String? = null,
+										 style: String? = null,
+										 timeout: Long? = null,
+										 view: String? = null,
+										 seqInterval: Long? = null,
+										 etag: String? = null): Triple<Changes<T>?, String?, STATUS?> {
 
 		val headers = configureHeaders(etag = etag)
 
@@ -228,7 +228,7 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 		val (_, response, result) = changesUri.httpGet(parameters)
 				.header(headers)
 				.configureAuthentication(server)
-				.responseObject(CouchDB.adapter.deserializeChanges<T>())
+				.responseObject(CouchDB.adapter.deserializeChanges<T>(T::class.java))
 
 		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
 

@@ -22,6 +22,7 @@ open class GsonCouchDBBaseTest {
 		fun teardown() {
 			couchdb.database("kouchlin-test-db").delete()
 			couchdb.database("kouchlin-changes-test-db").delete()
+			couchdb.database("kouchlin-test-alldocs-db").delete()
 		}
 
 	}

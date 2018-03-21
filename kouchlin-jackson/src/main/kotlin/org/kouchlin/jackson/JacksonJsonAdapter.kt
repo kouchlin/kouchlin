@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.jackson.jacksonDeserializerOf
 import com.github.kittinunf.fuel.jackson.mapper
+import org.kouchlin.domain.Changes
+import org.kouchlin.domain.ViewResult
+import org.kouchlin.domain.ViewResultRow
 import org.kouchlin.gson.domain.JacksonChanges
 import org.kouchlin.jackson.domain.JacksonBulkDocs
 import org.kouchlin.jackson.domain.JacksonDBInfo
@@ -43,7 +46,52 @@ class JacksonJsonAdapter : JsonAdapter {
 
 	override fun deserializeDBUpdates() = jacksonDeserializerOf<JacksonDBUpdates>()
 	override fun deserializeDBInfo() = jacksonDeserializerOf<JacksonDBInfo>()
-	override fun <T : Any> deserializeChanges() = jacksonDeserializerOf<JacksonChanges<T>>()
+
+	override fun <T : Any> deserializeChanges(docType: Class<T>?): ResponseDeserializable<Changes<T>> = object : ResponseDeserializable<Changes<T>> {
+		override fun deserialize(reader: Reader): Changes<T>? {
+			var changes = mapper.readValue<JacksonChanges<T>>(reader, JacksonChanges::class.java as Class<JacksonChanges<T>>)
+			if (docType != null) {
+				changes.results?.map {
+					it.doc = it.doc?.let { doc -> mapper.readValue<T>(mapper.writeValueAsString(doc), docType) }
+				}
+			}
+			return changes
+		}
+	}
+
+	override fun <V, T> deserializeViewResults(resultType: Class<V>?, docType: Class<T>?):
+			ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> = object : ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> {
+		override fun deserialize(reader: Reader): ViewResult<ViewResultRow<V, T>> {
+			var result = mapper.readValue<ViewResult<ViewResultRow<V, T>>>(reader, ViewResult::class.java as Class<ViewResult<ViewResultRow<V, T>>>)
+
+			if (resultType != null) {
+				result.rows.map {
+					it.value = it.value?.let { value -> mapper.readValue<V>(mapper.writeValueAsString(value), resultType) }
+				}
+			}
+
+			if (docType != null) {
+				result.rows.map {
+					it.doc = it.doc?.let { doc -> mapper.readValue<T>(mapper.writeValueAsString(doc), docType) }
+				}
+			}
+			return result
+
+//			val gson = Gson()
+//			val result = gson.fromJson<ViewResult<ViewResultRow<V, T>>>(reader, object : TypeToken<ViewResult<ViewResultRow<V, T>>>() {}.type)
+//			if (resultType != null) {
+//				result.rows.map {
+//					it.value = it.value?.let { value -> gson.fromJson<V>(gson.toJson(value), resultType) }
+//				}
+//			}
+//			if (docType != null) {
+//				result.rows.map {
+//					it.doc = it.doc?.let { doc -> gson.fromJson<T>(gson.toJson(doc), docType) }
+//				}
+//			}
+//			return result
+		}
+	}
 
 	override fun serialize(entity: Any): String = mapper.writeValueAsString(entity)
 	override fun <T : Any> serializeBulkDocs(docs: List<T>, newEdits: Boolean?): String {

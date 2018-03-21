@@ -2,11 +2,11 @@ package org.kouchlin.domain
 
 data class ChangesResultRev(val rev: String)
 
-data class ChangesResult<T>(val seq: String,
-							val id: String,
-							val deleted: Boolean?,
-							val changes: List<ChangesResultRev>,
-							val doc: T?
+data class ChangesResult<T>(var seq: String,
+							var id: String,
+							var deleted: Boolean?,
+							var changes: List<ChangesResultRev>,
+							var doc: T?
 )
 
 abstract class Changes<T> {
