@@ -55,19 +55,38 @@ class JacksonCouchDBDocumentCRUDTest : JacksonCouchDBBaseTest() {
         assert(status == STATUS.CREATED)
     }
 	
-//	@Test
-//	fun allDocsTest() {
-//		var database = couchdb.database("kouchlin-test-db")
-//		val doc = """{
-//					"a":1
-//					}"""
-//		var (_, _, status) = database.document("test-all-docs").save(content = doc)
-//		assert(status == STATUS.CREATED)
-//
-//		val (result,status2) = database.allDocs<Any>()
-//		assert(result?.rows!!.isNotEmpty())
-//	}
-	
+	@Test
+	fun allDocsTest() {
+		var database = couchdb.database("kouchlin-test-db")
+		val doc = """{
+					"a":1
+					}"""
+		var (_, _, status) = database.document("test-all-docs").save(content = doc)
+		assert(status == STATUS.CREATED)
+
+		val (result,status2) = database.allDocs<Any>()
+		assert(result?.rows!!.isNotEmpty())
+	}
+
+    @Test
+    fun allDocsTestObject() {
+        var database = couchdb.database("kouchlin-test-alldocs-db")
+        database.create()
+
+        val doc1 = DummyJson(id = "test_with_id1", foo = "value")
+        val doc2 = DummyJson(id = "test_with_id2", foo = "value")
+        val doc3 = DummyJson(id = "test_with_id3", foo = "value")
+        val docs = listOf(doc1, doc2, doc3)
+
+        val (_, status) = database.bulkDocs(docs, true)
+        assert(status == STATUS.CREATED)
+
+        val (result, status2) = database.allDocs<DummyJson>(includeDocs = true)
+        assert(status2 == STATUS.OK)
+        assert(result?.rows!!.isNotEmpty())
+        assert(result.rows.first().doc is DummyJson)
+    }
+
 	@Test
 	fun bulkDocsTest() {
 		var database = couchdb.database("kouchlin-test-db")

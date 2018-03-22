@@ -1,6 +1,7 @@
 package org.kouchlin.jackson
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.NullNode
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -49,12 +50,13 @@ class JacksonJsonAdapter : JsonAdapter {
 
 	override fun <T : Any> deserializeChanges(docType: Class<T>?): ResponseDeserializable<Changes<T>> = object : ResponseDeserializable<Changes<T>> {
 		override fun deserialize(reader: Reader): Changes<T>? {
-			var changes = mapper.readValue<JacksonChanges<T>>(reader, JacksonChanges::class.java as Class<JacksonChanges<T>>)
-			if (docType != null) {
-				changes.results?.map {
-					it.doc = it.doc?.let { doc -> mapper.readValue<T>(mapper.writeValueAsString(doc), docType) }
-				}
-			}
+			val changesResultType = mapper.getTypeFactory().constructParametricType(JacksonChanges::class.java, docType );
+			var changes = mapper.readValue<JacksonChanges<T>>(reader, changesResultType)
+//			if (docType != null) {
+//				changes.results?.map {
+//					it.doc = it.doc?.let { doc -> mapper.readValue<T>(mapper.writeValueAsString(doc), docType) }
+//				}
+//			}
 			return changes
 		}
 	}
@@ -62,34 +64,9 @@ class JacksonJsonAdapter : JsonAdapter {
 	override fun <V, T> deserializeViewResults(resultType: Class<V>?, docType: Class<T>?):
 			ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> = object : ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> {
 		override fun deserialize(reader: Reader): ViewResult<ViewResultRow<V, T>> {
-			var result = mapper.readValue<ViewResult<ViewResultRow<V, T>>>(reader, ViewResult::class.java as Class<ViewResult<ViewResultRow<V, T>>>)
-
-			if (resultType != null) {
-				result.rows.map {
-					it.value = it.value?.let { value -> mapper.readValue<V>(mapper.writeValueAsString(value), resultType) }
-				}
-			}
-
-			if (docType != null) {
-				result.rows.map {
-					it.doc = it.doc?.let { doc -> mapper.readValue<T>(mapper.writeValueAsString(doc), docType) }
-				}
-			}
-			return result
-
-//			val gson = Gson()
-//			val result = gson.fromJson<ViewResult<ViewResultRow<V, T>>>(reader, object : TypeToken<ViewResult<ViewResultRow<V, T>>>() {}.type)
-//			if (resultType != null) {
-//				result.rows.map {
-//					it.value = it.value?.let { value -> gson.fromJson<V>(gson.toJson(value), resultType) }
-//				}
-//			}
-//			if (docType != null) {
-//				result.rows.map {
-//					it.doc = it.doc?.let { doc -> gson.fromJson<T>(gson.toJson(doc), docType) }
-//				}
-//			}
-//			return result
+			val viewResultRowType = mapper.getTypeFactory().constructParametricType(ViewResultRow::class.java, resultType,docType );
+			val viewResultType = mapper.getTypeFactory().constructParametricType(ViewResult::class.java, viewResultRowType );
+			return  mapper.readValue<ViewResult<ViewResultRow<V, T>>>(reader, viewResultType)
 		}
 	}
 
