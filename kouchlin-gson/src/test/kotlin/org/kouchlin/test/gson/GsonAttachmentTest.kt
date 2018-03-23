@@ -2,24 +2,40 @@ package org.kouchlin.test.gson
 
 import org.junit.Test
 import org.kouchlin.util.STATUS
+import java.nio.charset.Charset
 
 class GsonAttachmentTest : GsonCouchDBBaseTest() {
-//	@Test
+	@Test
 	fun saveAttachmentTest() {
+
 		var database = couchdb.database("kouchlin-attachment-test-db")
 		database.create()
-		var document = database.document("test")
-		val (response, _, status) = document.save(content = "{}")
-		assert(status == STATUS.CREATED)
-		assert(response!!.rev.isNotBlank())
-		
-		val (_, status2) = document.attachment("att1").save(data = "This is an attachment", contentType = "text/plain", rev=response.rev)
-		assert(status2 == STATUS.CREATED)
 
-		val (attachment, contentType, status3) = document.attachment("att1").get()
-		assert(status3 == STATUS.OK)
-		assert(contentType == "text/plain")
-		assert(attachment!!.data.contentToString() == "This is an attachment")
+		try {
+			val document = database.document("test")
+			val (response, _, status) = document.save(content = "{}")
+			assert(status == STATUS.CREATED)
+			assert(response!!.rev.isNotBlank())
+
+			val attachmentRef = document.attachment("att1")
+
+			val (result, _, status2) = attachmentRef.save(data = "This is an attachment", contentType = "text/plain", rev = response.rev)
+			assert(status2 == STATUS.CREATED)
+			assert(result?.rev?.isNotBlank() ?: false)
+
+			val (attachment, etag, status3) = attachmentRef.get()
+			assert(status3 == STATUS.OK)
+			assert(etag?.isNotBlank() ?: false)
+			assert(attachment!!.contentType == "text/plain")
+			assert(attachment.data.toString(Charset.defaultCharset()) == "This is an attachment")
+
+			val (result4, _, status4) = attachmentRef.delete(result?.rev)
+			assert(status4 == STATUS.OK)
+			assert(result4?.rev?.isNotBlank() ?: false)
+
+		} finally {
+			database.delete()
+		}
 
 	}
 
