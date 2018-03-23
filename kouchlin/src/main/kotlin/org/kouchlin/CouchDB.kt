@@ -39,6 +39,7 @@ class CouchDB(val serverURL: String, val authentication: BasicAuthentication? = 
 		return result.component1()?.version
 	}
 
+	@Suppress("UNCHECKED_CAST") 
 	fun databases(): List<String>? {
 		val (_, _, result) = ALLDBS_ENDPOINT.httpGet().responseObject(adapter.deserialize(List::class.java as Class<List<String>>))
 		return result.component1()

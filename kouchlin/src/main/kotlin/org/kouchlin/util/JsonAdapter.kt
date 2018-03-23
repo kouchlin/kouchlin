@@ -7,7 +7,11 @@ import org.kouchlin.domain.DBUpdates
 import org.kouchlin.domain.ViewResult
 import org.kouchlin.domain.ViewResultRow
 
-interface JsonAdapter {
+/**
+ This interface defines the JSON serialization/deserializarion operations required by CouchDB API.
+ It allows to decouple Kouchlin from the underline JSON library
+*/
+interface JsonAdapter {	 
 	fun <T : Any> deserialize(c: Class<T>): ResponseDeserializable<T>
 	fun <T : Any> deserialize(content: String, c: Class<T>): T?
 	fun <T : Any> serializeBulkDocs(docs: List<T>, newEdits: Boolean? = null): String

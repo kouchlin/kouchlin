@@ -25,7 +25,10 @@ class DummyJsonAdapter : JsonAdapter {
 
 	override fun deserializeDBUpdates() = deserialize(DBUpdates::class.java)
 	override fun deserializeDBInfo() = deserialize(DBInfo::class.java)
+	@Suppress("UNCHECKED_CAST")
 	override fun <T : Any> deserializeChanges(docType: Class<T>?) = deserialize(Changes::class.java as Class<Changes<T>>)
+
+	@Suppress("UNCHECKED_CAST")
 	override fun <V, T> deserializeViewResults(resultType: Class<V>?, docType: Class<T>?):
 			ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> = deserialize(ViewResult::class.java as Class<ViewResult<ViewResultRow<V, T>>>)
 

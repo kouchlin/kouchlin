@@ -1,8 +1,13 @@
 package org.kouchlin
 
 import com.github.kittinunf.fuel.httpDelete
+import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpHead
+import com.github.kittinunf.fuel.httpPut
+import mu.KotlinLogging
+import org.kouchlin.domain.Attachment
 import org.kouchlin.util.CONTENT_LENGHT_HEADER
+import org.kouchlin.util.CONTENT_TYPE_HEADER
 import org.kouchlin.util.ETAG_HEADER
 import org.kouchlin.util.STATUS
 import org.kouchlin.util.SaveResponse
@@ -11,6 +16,8 @@ import org.kouchlin.util.configureHeaders
 import org.kouchlin.util.configureParameters
 import org.kouchlin.util.getHeaderValue
 import org.kouchlin.util.toStatus
+
+private val logger = KotlinLogging.logger {}
 
 class CouchDatabaseDocAttachment(val db: CouchDatabase, val doc: CouchDatabaseDocument, val name: String) {
 
@@ -31,21 +38,55 @@ class CouchDatabaseDocAttachment(val db: CouchDatabase, val doc: CouchDatabaseDo
 		return Triple(contentLenght, responseEtag, response.toStatus())
 	}
 
-	fun get(rev: String? = null, etag: String? = null) {
+	fun get(rev: String? = null, etag: String? = null): Triple<Attachment?, String?, STATUS> {
 
 		val headers = configureHeaders(etag = etag)
 		val parameters = configureParameters(rev = rev)
 
-
-		val (_, response, result) = attachmentURI.httpDelete(parameters)
+		val (_, response, _) = attachmentURI.httpGet(parameters)
 				.configureAuthentication(db.server)
 				.header(headers)
+				.response()
+
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
+		val responseContent = response.getHeaderValue<String?>(CONTENT_TYPE_HEADER)
+
+		val responseStatus = response.toStatus()
+
+		if (responseStatus == STATUS.OK) {
+			return Triple(Attachment(response.data, responseContent!!), responseEtag, response.toStatus())
+		} else {
+			return Triple(null, null, response.toStatus())
+		}
+
+	}
+
+	fun save(data: ByteArray, contentType: String, rev: String? = null): Pair<String?, STATUS> {
+		val headers = configureHeaders(contentType = contentType)
+		val parameters = configureParameters(rev = rev)
+		val (_, response, _) = attachmentURI.httpPut(parameters)
+				.configureAuthentication(db.server)
+				.header(headers)
+				.body(data)
 				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
 
 		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
-		//TODO: Return content
-
+		return Pair(responseEtag, response.toStatus())
 	}
+
+	fun save(data: String, contentType: String, rev: String? = null): Pair<String?, STATUS> {
+		val headers = configureHeaders(contentType = contentType)
+		val parameters = configureParameters(rev = rev)
+		val (request, response, _) = attachmentURI.httpPut(parameters)
+				.configureAuthentication(db.server)
+				.header(headers)
+				.body(data)
+				.responseObject(CouchDB.adapter.deserialize(SaveResponse::class.java))
+		logger.info(request.cUrlString())
+		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
+		return Pair(responseEtag, response.toStatus())
+	}
+
 
 	fun delete(rev: String? = null, batch: Boolean? = null, fullCommit: Boolean? = null): Triple<SaveResponse?, String?, STATUS> {
 

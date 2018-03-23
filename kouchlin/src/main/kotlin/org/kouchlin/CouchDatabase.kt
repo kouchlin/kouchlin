@@ -18,8 +18,8 @@ import org.kouchlin.util.STATUS
 import org.kouchlin.util.configureAuthentication
 import org.kouchlin.util.configureChangesParametes
 import org.kouchlin.util.configureHeaders
-import org.kouchlin.util.getHeaderValue
 import org.kouchlin.util.configureParameters
+import org.kouchlin.util.getHeaderValue
 import org.kouchlin.util.toStatus
 
 
@@ -176,10 +176,11 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 
 	}
 
+	@Suppress("UNCHECKED_CAST") 
 	fun <T : Any> bulkDocs(docs: List<T>, newEdits: Boolean? = null): Pair<List<BulkDocsResult>?, STATUS> {
 		val headers = configureHeaders(contentType = APPLICATION_JSON)
 		val jsonContent = CouchDB.adapter.serializeBulkDocs<T>(docs, newEdits)
-
+		
 		val (_, response, result) = bulkDocsUri.httpPost()
 				.configureAuthentication(server)
 				.header(headers)

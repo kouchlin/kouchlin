@@ -69,7 +69,7 @@ WIP: A Kotlin client for CouchDB
 | /db/doc/attachment                           | HEAD   | :heavy_check_mark:       |
 | /db/doc/attachment                           | GET    | :hourglass_flowing_sand: |
 | /db/doc/attachment                           | PUT    | :hourglass_flowing_sand: |
-| /db/doc/attachment                           | DELETE | :hourglass_flowing_sand: |
+| /db/doc/attachment                           | DELETE | :heavy_check_mark:       |
 
 #### Design
 *Pending*
