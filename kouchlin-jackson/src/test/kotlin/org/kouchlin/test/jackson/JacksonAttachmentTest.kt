@@ -1,14 +1,14 @@
-package org.kouchlin.test.gson
+package org.kouchlin.test.jackson
 
 import org.junit.Test
 import org.kouchlin.util.STATUS
 import java.nio.charset.Charset
 
-class GsonAttachmentTest : GsonCouchDBBaseTest() {
+class JacksonAttachmentTest : JacksonCouchDBBaseTest() {
 	@Test
 	fun saveAttachmentTest() {
 
-		var database = couchdb.database("kouchlin-attachment-test-db")
+		val database = couchdb.database("kouchlin-attachment-test-db")
 		database.create()
 
 		try {

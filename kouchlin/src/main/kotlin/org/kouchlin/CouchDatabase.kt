@@ -60,9 +60,9 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 	}
 
 	fun compact(ddoc: String? = null): Boolean {
-		val ddoc_compact_uri = "$compact_uri${ddoc?.let({ "/$ddoc" }).orEmpty()}"
+		val ddocCompactUri = "$compact_uri${ddoc?.let({ "/$ddoc" }).orEmpty()}"
 		val headers = configureHeaders(contentType = APPLICATION_JSON)
-		val (_, response, _) = ddoc_compact_uri.httpPost()
+		val (_, response, _) = ddocCompactUri.httpPost()
 				.configureAuthentication(server)
 				.header(headers).response()
 

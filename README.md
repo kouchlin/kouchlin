@@ -67,8 +67,8 @@ WIP: A Kotlin client for CouchDB
 | Endpoint                                     | Method | Status                   |
 |----------------------------------------------|--------|--------------------------|
 | /db/doc/attachment                           | HEAD   | :heavy_check_mark:       |
-| /db/doc/attachment                           | GET    | :hourglass_flowing_sand: |
-| /db/doc/attachment                           | PUT    | :hourglass_flowing_sand: |
+| /db/doc/attachment                           | GET    | :heavy_check_mark:       |
+| /db/doc/attachment                           | PUT    | :heavy_check_mark:       |
 | /db/doc/attachment                           | DELETE | :heavy_check_mark:       |
 
 #### Design
