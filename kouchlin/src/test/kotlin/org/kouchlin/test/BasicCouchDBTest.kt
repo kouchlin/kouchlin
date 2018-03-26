@@ -1,51 +1,26 @@
 package org.kouchlin.test
 
 import org.junit.Test
-import org.kouchlin.util.Feed
-import org.kouchlin.util.STATUS
+import org.kouchlin.test.base.CouchDBBaseTest
 
 class BasicCouchDBTest : CouchDBBaseTest() {
 
-	@Test
-	fun couchDBUpTest() {
-		assert(couchdb.up())
-	}
 
-	@Test
-	fun existsDBTest() {
-		var database = couchdb.database("kouchlin-test-db")
-		assert(database.exists() == STATUS.OK)
-	}
+    @Test
+    fun couchDBUpTest() = org.kouchlin.test.shared.couchDBUpTest(couchdb)
 
-	@Test
-	fun notExistsDBTest() {
-		var database = couchdb.database("not-exists-db")
-		assert(database.exists() == STATUS.NOT_FOUND)
-	}
+    @Test
+    fun existsDBTest() = org.kouchlin.test.shared.existsDBTest(couchdb)
 
-	@Test
-	fun compactTest() {
-		var database = couchdb.database("kouchlin-test-db")
-		assert(database.compact())
+    @Test
+    fun notExistsDBTest() = org.kouchlin.test.shared.notExistsDBTest(couchdb)
 
-	}
+    @Test
+    fun compactTest() = org.kouchlin.test.shared.compactTest(couchdb)
 
-	@Test
-	fun ensureFullCommitTest() {
-		var database = couchdb.database("kouchlin-test-db")
-		assert(database.ensureFullCommit())
+    @Test
+    fun ensureFullCommitTest() = org.kouchlin.test.shared.ensureFullCommitTest(couchdb)
 
-	}
-
-	@Test
-	fun createDBTest() {
-		var database = couchdb.database("kouchlin-test-db-crud")
-		database.delete()
-		assert(database.exists() == STATUS.NOT_FOUND)
-		assert(database.create() == STATUS.CREATED)
-		assert(database.exists() == STATUS.OK)
-		assert(database.delete() == STATUS.OK)
-		assert(database.exists() == STATUS.NOT_FOUND)
-	}
-
+    @Test
+    fun createDBTest() = org.kouchlin.test.shared.createDBTest(couchdb)
 }

@@ -1,16 +1,18 @@
-package org.kouchlin.test
+package org.kouchlin.test.jackson.base
 
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.kouchlin.CouchDB
+import org.kouchlin.jackson.JacksonJsonAdapter
 
-open class CouchDBBaseTest {
+open class JacksonCouchDBBaseTest {
 	companion object {
 		lateinit var couchdb: CouchDB
 
 		@BeforeClass
 		@JvmStatic
 		fun setUpClass() {
+			CouchDB.adapter = JacksonJsonAdapter()
 			couchdb = CouchDB("http://localhost:5984")
 			couchdb.database("kouchlin-test-db").create()
 		}
@@ -19,6 +21,7 @@ open class CouchDBBaseTest {
 		@JvmStatic
 		fun teardown() {
 			couchdb.database("kouchlin-test-db").delete()
+			couchdb.database("kouchlin-changes-test-db").delete()
 		}
 
 	}

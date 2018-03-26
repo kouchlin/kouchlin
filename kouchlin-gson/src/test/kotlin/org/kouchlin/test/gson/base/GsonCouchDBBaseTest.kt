@@ -1,4 +1,4 @@
-package org.kouchlin.test.gson
+package org.kouchlin.test.gson.base
 
 import org.junit.AfterClass
 import org.junit.BeforeClass

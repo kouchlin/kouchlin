@@ -21,5 +21,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
     compile project(':kouchlin')
+    testCompile project(':kouchlin').sourceSets.test.output
     testCompile "junit:junit:$junitVersion"
+    testRuntime 'org.slf4j:slf4j-simple:1.7.5'
 }

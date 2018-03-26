@@ -20,7 +20,7 @@ class JacksonJsonAdapterTest {
     fun findDocumentIdTest2() {
         val adapter = JacksonJsonAdapter()
 
-        val testDoc = DummyJson( foo ="value")
+        val testDoc = DummyJson(foo = "value")
 
         val (id, rev) = adapter.findDocumentIdRev(testDoc)
         assert(id == null)
@@ -48,7 +48,7 @@ class JacksonJsonAdapterTest {
     fun deleteDocumentIdTest2() {
         val adapter = JacksonJsonAdapter()
 
-        val testDoc = DummyJson(foo= "value")
+        val testDoc = DummyJson(foo = "value")
 
         val (id, rev, content) = adapter.deleteDocumentIdRev(testDoc)
         assert(content != null)

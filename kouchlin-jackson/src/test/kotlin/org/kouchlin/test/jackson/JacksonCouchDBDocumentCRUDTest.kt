@@ -1,103 +1,34 @@
 package org.kouchlin.test.jackson
 
 import org.junit.Test
-import org.kouchlin.util.STATUS
+import org.kouchlin.test.jackson.base.JacksonCouchDBBaseTest
 
 class JacksonCouchDBDocumentCRUDTest : JacksonCouchDBBaseTest() {
     @Test
-    fun existsDocTest() {
-        var database = couchdb.database("kouchlin-test-db")
-        var (size, etag, status) = database.document("test1").exists()
-        assert(status == STATUS.NOT_FOUND)
-    }
+    fun existsDocTest() = org.kouchlin.test.shared.existsDocTest(couchdb)
 
     @Test
-    fun getDocTest() {
-        var database = couchdb.database("kouchlin-test-db")
-        var (_, response, status) = database.document("test2").get<String>(attachment = true, attsSince = listOf("1-aaa", "2-bbb", "3-ccc"))
-        assert(status == STATUS.NOT_FOUND)
-    }
+    fun getDocTest() = org.kouchlin.test.shared.getDocTest(couchdb)
 
     @Test
-    fun putDocTest() {
-        var database = couchdb.database("kouchlin-test-db")
-        val doc = """{
-					"a":1
-					}"""
-        var (_, _, status) = database.document("test").save(content = doc)
-
-        assert(status == STATUS.CREATED)
-    }
+    fun putDocTest() = org.kouchlin.test.shared.putDocTest(couchdb)
 
     @Test
-    fun postDocTest() {
-        var database = couchdb.database("kouchlin-test-db")
-        val doc = """{
-					"a":1
-					}"""
-        var (_, _, status) = database.document().save(content = doc)
-        assert(status == STATUS.CREATED)
-    }
+    fun putDocTest2() = org.kouchlin.test.shared.putDocTest2(couchdb)
 
     @Test
-    fun putDocTestFromObject() {
-        var database = couchdb.database("kouchlin-test-db")
-        val doc =  DummyJson(id = "test_with_id", foo = "value")
-        var (_, _, status) = database.document().save(content = doc)
-        assert(status == STATUS.CREATED)
-    }
+    fun putDocTestFromObject() = org.kouchlin.test.shared.putDocTestFromObject(couchdb, ::dummyJsonFactory)
 
     @Test
-    fun postDocTestFromObject() {
-        var database = couchdb.database("kouchlin-test-db")
-        val doc =  DummyJson(foo = "value")
-        var (_, _, status) = database.document().save(content = doc)
-        assert(status == STATUS.CREATED)
-    }
-	
-	@Test
-	fun allDocsTest() {
-		var database = couchdb.database("kouchlin-test-db")
-		val doc = """{
-					"a":1
-					}"""
-		var (_, _, status) = database.document("test-all-docs").save(content = doc)
-		assert(status == STATUS.CREATED)
-
-		val (result,status2) = database.allDocs<Any>()
-		assert(result?.rows!!.isNotEmpty())
-	}
+    fun postDocTestFromObject() = org.kouchlin.test.shared.postDocTestFromObject(couchdb, ::dummyJsonFactory)
 
     @Test
-    fun allDocsTestObject() {
-        var database = couchdb.database("kouchlin-test-alldocs-db")
-        database.create()
+    fun allDocsTest() = org.kouchlin.test.shared.allDocsTest(couchdb)
 
-        val doc1 = DummyJson(id = "test_with_id1", foo = "value")
-        val doc2 = DummyJson(id = "test_with_id2", foo = "value")
-        val doc3 = DummyJson(id = "test_with_id3", foo = "value")
-        val docs = listOf(doc1, doc2, doc3)
+    @Test
+    fun allDocsTestObject() = org.kouchlin.test.shared.allDocsTestObject(couchdb, ::dummyJsonFactory)
 
-        val (_, status) = database.bulkDocs(docs, true)
-        assert(status == STATUS.CREATED)
+    @Test
+    fun bulkDocsTest() = org.kouchlin.test.shared.bulkDocsTest(couchdb, ::dummyJsonFactory)
 
-        val (result, status2) = database.allDocs<DummyJson>(includeDocs = true)
-        assert(status2 == STATUS.OK)
-        assert(result?.rows!!.isNotEmpty())
-        assert(result.rows.first().doc is DummyJson)
-    }
-
-	@Test
-	fun bulkDocsTest() {
-		var database = couchdb.database("kouchlin-test-db")
-		
-		val doc1 = DummyJson(id = "test_with_id1", foo = "value")
-		val doc2 = DummyJson(id = "test_with_id2", foo = "value")
-		val doc3 = DummyJson(id = "test_with_id3", foo = "value")
-		
-		val docs = listOf(doc1,doc2,doc3)
-		val (result,status) =  database.bulkDocs(docs)
-		assert(status == STATUS.CREATED)
-		assert(result?.size == 3)	
-	}
 }
