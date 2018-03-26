@@ -11,7 +11,7 @@ WIP: A Kotlin client for CouchDB
 | /_all_dbs                                    | GET    | :heavy_check_mark:       |
 | /_db_updates                                 | GET    | :heavy_check_mark:       |
 | /_active_tasks                               | GET    | :hourglass_flowing_sand: |
-| /_replicate                                  | POST   | :hourglass_flowing_sand: |
+| /_replicate                                  | POST   | :heavy_check_mark:       |
 | /_uuids                                      | GET    | :hourglass_flowing_sand: |
 | /_cluster_setup                              | GET    | :heavy_multiplication_x: |
 | /_cluster_setup                              | POST   | :heavy_multiplication_x: |

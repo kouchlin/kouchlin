@@ -75,7 +75,7 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
         val headers = configureHeaders(contentType = APPLICATION_JSON)
         val queryString = configureParameters(batch = batch)
                 .encodeQueryString()
-                .let { if (it.isNotEmpty()) "?&it" else it }
+                .let { if (it.isNotEmpty()) "?$it" else it }
         val dbUriWithParams = "${db.dbName}$queryString"
         val (docId, docRev, jsonContent) = CouchDB.adapter.deleteDocumentIdRev(content)
         docId?.let { logger.warn("Doc rev $docId is ignored") }

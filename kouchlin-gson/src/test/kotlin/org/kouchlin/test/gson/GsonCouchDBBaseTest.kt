@@ -23,6 +23,7 @@ open class GsonCouchDBBaseTest {
 			couchdb.database("kouchlin-test-db").delete()
 			couchdb.database("kouchlin-changes-test-db").delete()
 			couchdb.database("kouchlin-test-alldocs-db").delete()
+			couchdb.database("kouchlin-target-db").delete()
 		}
 
 	}
