@@ -23,6 +23,7 @@ dependencies {
     testCompile "junit:junit:$junitVersion"
   	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
   	testCompile 'org.slf4j:slf4j-simple:1.7.5'
+    testCompile "io.mockk:mockk:1.7.15"
 }
 
 test {

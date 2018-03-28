@@ -1,4 +1,4 @@
-package org.kouchlin.test.jackson
+package org.kouchlin.test.jackson.integration
 
 import org.junit.Test
 import org.kouchlin.test.jackson.base.JacksonCouchDBBaseTest

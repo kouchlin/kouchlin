@@ -58,9 +58,11 @@ class GsonJsonAdapter : JsonAdapter {
     override fun serialize(entity: Any): String = Gson().toJson(entity)
 
     override fun <T : Any> serializeBulkDocs(docs: List<T>, newEdits: Boolean?): String {
-        val gsonBulkDocs = GsonBulkDocs<T>();
-        gsonBulkDocs.docs = docs
-        gsonBulkDocs.newEdits = newEdits
+        val gsonBulkDocs = GsonBulkDocs<T>().apply {
+            this.docs = docs
+            this.newEdits = newEdits
+        }
+
         return serialize(gsonBulkDocs)
     }
 
@@ -100,8 +102,9 @@ class GsonJsonAdapter : JsonAdapter {
             is String -> Gson().fromJson(document, JsonElement::class.java).asJsonObject
             else -> Gson().toJsonTree(document).asJsonObject
         }
-        id?.let({ jsonDocument.addProperty("_id", id) })
-        rev?.let({ jsonDocument.addProperty("_rev", rev) })
+
+        id?.let({ jsonDocument.addProperty("_id", it) })
+        rev?.let({ jsonDocument.addProperty("_rev", it) })
 
         return jsonDocument.toString()
     }
@@ -114,8 +117,12 @@ class GsonJsonAdapter : JsonAdapter {
         }
         val id = jsonDocument.getAsJsonPrimitive("_id")?.asString
         val rev = jsonDocument.getAsJsonPrimitive("_rev")?.asString
-        jsonDocument.remove("_id")
-        jsonDocument.remove("_rev")
+
+        with(jsonDocument) {
+            remove("_id")
+            remove("_rev")
+        }
+
         return Triple(id, rev, jsonDocument.toString())
     }
 
