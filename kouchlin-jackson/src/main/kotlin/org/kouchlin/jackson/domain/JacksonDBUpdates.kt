@@ -8,6 +8,6 @@ class JacksonDBUpdatesResult : DBUpdatesResult() {
 	override @JsonProperty("db_name") var dbName: String? = null
 }
 
-class JacksonDBUpdates : DBUpdates() {
+class JacksonDBUpdates : DBUpdates<JacksonDBUpdatesResult>() {
 	@JsonProperty("last_seq") override var lastSeq: String? = null
 }

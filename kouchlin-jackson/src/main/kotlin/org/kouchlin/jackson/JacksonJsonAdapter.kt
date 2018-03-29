@@ -38,7 +38,7 @@ class JacksonJsonAdapter : JsonAdapter {
     override fun deserializeReplicationResponse() = jacksonDeserializerOf<JacksonReplicationResponse>()
 
     init {
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
     }
 
     override fun <T : Any> deserialize(c: Class<T>): ResponseDeserializable<T> = object : ResponseDeserializable<T> {
@@ -61,22 +61,21 @@ class JacksonJsonAdapter : JsonAdapter {
 
     override fun <T : Any> deserialize(content: String, c: Class<T>): T = mapper.readValue(content, c)
 
-    override fun deserializeDBUpdates() = jacksonDeserializerOf<JacksonDBUpdates>()
+    override fun deserializeDBUpdates() = jacksonDeserializerOf<JacksonDBUpdates>() as ResponseDeserializable<DBUpdates<DBUpdatesResult>>
     override fun deserializeDBInfo() = jacksonDeserializerOf<JacksonDBInfo>()
 
     override fun <T : Any> deserializeChanges(docType: Class<T>?): ResponseDeserializable<Changes<T>> = object : ResponseDeserializable<Changes<T>> {
         override fun deserialize(reader: Reader): Changes<T>? {
-            val changesResultType = mapper.getTypeFactory().constructParametricType(JacksonChanges::class.java, docType);
-            var changes = mapper.readValue<JacksonChanges<T>>(reader, changesResultType)
-            return changes
+            val changesResultType = mapper.typeFactory.constructParametricType(JacksonChanges::class.java, docType)
+            return mapper.readValue<JacksonChanges<T>>(reader, changesResultType)
         }
     }
 
     override fun <V, T> deserializeViewResults(resultType: Class<V>?, docType: Class<T>?):
             ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> = object : ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> {
         override fun deserialize(reader: Reader): ViewResult<ViewResultRow<V, T>> {
-            val viewResultRowType = mapper.getTypeFactory().constructParametricType(ViewResultRow::class.java, resultType, docType);
-            val viewResultType = mapper.getTypeFactory().constructParametricType(ViewResult::class.java, viewResultRowType);
+            val viewResultRowType = mapper.typeFactory.constructParametricType(ViewResultRow::class.java, resultType, docType)
+            val viewResultType = mapper.typeFactory.constructParametricType(ViewResult::class.java, viewResultRowType)
             return mapper.readValue<ViewResult<ViewResultRow<V, T>>>(reader, viewResultType)
         }
     }
@@ -91,7 +90,7 @@ class JacksonJsonAdapter : JsonAdapter {
 
     override fun findDocumentIdRev(document: Any): Triple<String?, String?, String?> {
 
-        val jsonNode: JsonNode = mapper.valueToTree(document);
+        val jsonNode: JsonNode = mapper.valueToTree(document)
 
         val id = extractValueFromNode(jsonNode.get("_id"))
         val rev = extractValueFromNode(jsonNode.get("_rev"))
@@ -100,7 +99,7 @@ class JacksonJsonAdapter : JsonAdapter {
     }
 
     override fun appendDocumentIdRev(document: Any, id: String?, rev: String?): String {
-        val jsonNode: JsonNode = mapper.valueToTree(document);
+        val jsonNode: JsonNode = mapper.valueToTree(document)
         assert(jsonNode.isObject)
         id?.let { (jsonNode as ObjectNode).put("_id", id) }
         rev?.let { (jsonNode as ObjectNode).put("_rev", rev) }
@@ -110,7 +109,7 @@ class JacksonJsonAdapter : JsonAdapter {
     override fun deleteDocumentIdRev(document: Any): Triple<String?, String?, String?> {
         val jsonNode: JsonNode = when (document) {
             is String -> mapper.readTree(document)
-            else -> mapper.valueToTree(document);
+            else -> mapper.valueToTree(document)
         }
 
         assert(jsonNode.isObject)
@@ -124,7 +123,8 @@ class JacksonJsonAdapter : JsonAdapter {
     }
 
     private fun extractValueFromNode(node: JsonNode?): String? {
-        if (node == null) return null;
+        if (node == null) return null
+
         return when (node) {
             is NullNode -> null
             else -> node.asText()

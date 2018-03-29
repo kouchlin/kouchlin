@@ -5,6 +5,7 @@ import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
+import mu.KotlinLogging
 import org.kouchlin.domain.BulkDocsResult
 import org.kouchlin.domain.Changes
 import org.kouchlin.domain.DBInfo
@@ -27,6 +28,8 @@ internal const val COMPACT_ENDPOINT = "/_compact"
 internal const val ENSURE_FULL_COMMIT_ENDPOINT = "/_ensure_full_commit"
 internal const val BULK_DOCS_ENDPOINT = "/_bulk_docs"
 internal const val CHANGES_ENDPOINT = "/_changes"
+
+private val logger = KotlinLogging.logger {}
 
 class CouchDatabase(val server: CouchDB, val dbName: String) {
 
@@ -65,7 +68,7 @@ class CouchDatabase(val server: CouchDB, val dbName: String) {
 		val (_, response, _) = ddocCompactUri.httpPost()
 				.configureAuthentication(server)
 				.header(headers).response()
-
+logger.info { response.statusCode }
 		return response.statusCode == 202
 	}
 

@@ -20,7 +20,7 @@ interface JsonAdapter {
                                     source: String? = null,
                                     target: String? = null): String
 
-    fun deserializeDBUpdates(): ResponseDeserializable<DBUpdates>
+    fun deserializeDBUpdates(): ResponseDeserializable<DBUpdates<DBUpdatesResult>>
     fun deserializeDBInfo(): ResponseDeserializable<DBInfo>
     fun deserializeReplicationResponse(): ResponseDeserializable<ReplicationResponse<*>>
     fun <T : Any> deserializeChanges(docType: Class<T>? = null): ResponseDeserializable<Changes<T>>

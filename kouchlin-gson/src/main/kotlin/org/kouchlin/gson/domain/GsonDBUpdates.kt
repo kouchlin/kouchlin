@@ -6,9 +6,9 @@ import org.kouchlin.domain.DBUpdatesResult
 
 
 class GsonDBUpdatesResult : DBUpdatesResult() {
-	override @SerializedName("db_name") var dbName: String? = null
+    @SerializedName("db_name") override var dbName: String? = null
 }
 
-class GsonDBUpdates : DBUpdates() { 
+class GsonDBUpdates : DBUpdates<GsonDBUpdatesResult>() {
 	@SerializedName("last_seq") override var lastSeq: String? = null
 }

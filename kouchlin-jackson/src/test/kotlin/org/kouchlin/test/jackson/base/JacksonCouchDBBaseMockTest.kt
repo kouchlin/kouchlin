@@ -1,5 +1,6 @@
 package org.kouchlin.test.jackson.base
 
+import com.github.kittinunf.fuel.core.FuelManager
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.kouchlin.CouchDB
@@ -19,6 +20,7 @@ open class JacksonCouchDBBaseMockTest {
 		@AfterClass
 		@JvmStatic
 		fun teardown() {
+            FuelManager.instance = FuelManager()
 		}
 
 	}

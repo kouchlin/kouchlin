@@ -10,7 +10,8 @@ import io.mockk.slot
 
 fun FuelManager.mock(statusCode: Int,
                      message: String = "",
-                     json: String = ""): CapturingSlot<Request> {
+                     json: String = "",
+                     headers: List<Pair<String,String>> = emptyList()): CapturingSlot<Request> {
 
     val slot = slot<Request>()
     val client = mockk<Client>()
@@ -19,7 +20,7 @@ fun FuelManager.mock(statusCode: Int,
     every { client.executeRequest(capture(slot)).responseMessage } returns message
     every { client.executeRequest(capture(slot)).data } returns json.toByteArray()
     every { client.executeRequest(capture(slot)).dataStream } returns json.toByteArray().inputStream()
-
+    every { client.executeRequest(capture(slot)).headers } returns headers.associateBy({it.first},{ listOf(it.second)})
     FuelManager.instance.client = client
     return slot
 }

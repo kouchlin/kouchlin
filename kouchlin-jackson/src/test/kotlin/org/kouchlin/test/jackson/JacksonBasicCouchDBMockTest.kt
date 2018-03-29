@@ -6,20 +6,17 @@ import org.kouchlin.test.jackson.base.JacksonCouchDBBaseMockTest
 class BasicCouchDBMockTest : JacksonCouchDBBaseMockTest() {
 
     @Test
-    fun couchDBVersionTest() = org.kouchlin.test.shared.couchDBVersionTestMockedTest(couchdb)
-
-    /*
-    TODO: Complete mocked test with json serialization requirement
-    @Test
-    fun couchDBAllDBsTest() = org.kouchlin.test.shared.couchDBAllDBsTest(couchdb)
+    fun couchDBVersionMockTest() = org.kouchlin.test.shared.couchDBVersionTestMockedTest(couchdb)
 
     @Test
-    fun couchDBUpdatesTest() = org.kouchlin.test.shared.couchDBUpdatesTest(couchdb)
+    fun couchDBAllDBsMockTest() = org.kouchlin.test.shared.couchDBAllDBsMockTest(couchdb)
 
     @Test
-    fun dbInfoTest() = org.kouchlin.test.shared.dbInfoTest(couchdb)
+    fun couchDBUpdatesMockTest() = org.kouchlin.test.shared.couchDBUpdatesMockTest(couchdb)
 
     @Test
-    fun changesTest() = org.kouchlin.test.shared.changesTest(couchdb, ::dummyJsonFactory, ::rev)
-    */
+    fun dbInfoMockTest() = org.kouchlin.test.shared.dbInfoMockTest(couchdb)
+
+    @Test
+    fun changesTest() = org.kouchlin.test.shared.changesMockTest(couchdb)
 }

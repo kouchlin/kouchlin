@@ -1,5 +1,6 @@
 package org.kouchlin.test.base
 
+import com.github.kittinunf.fuel.core.FuelManager
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.kouchlin.CouchDB
@@ -17,6 +18,7 @@ open class CouchDBBaseMockTest {
 		@AfterClass
 		@JvmStatic
 		fun teardown() {
+            FuelManager.instance = FuelManager()
 		}
 
 	}

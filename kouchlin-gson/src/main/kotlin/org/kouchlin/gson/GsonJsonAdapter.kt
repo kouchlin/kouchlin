@@ -18,7 +18,7 @@ class GsonJsonAdapter : JsonAdapter {
     override fun <T : Any> deserialize(content: String, c: Class<T>): T = Gson().fromJson<T>(content, c)
 
 
-    override fun deserializeDBUpdates() = gsonDeserializerOf<GsonDBUpdates>()
+    override fun deserializeDBUpdates() = gsonDeserializerOf<GsonDBUpdates>() as ResponseDeserializable<DBUpdates<DBUpdatesResult>>
     override fun deserializeDBInfo() = gsonDeserializerOf<GsonDBInfo>()
     override fun deserializeReplicationResponse() = deserialize<GsonReplicationResponse>(GsonReplicationResponse::class.java)
 

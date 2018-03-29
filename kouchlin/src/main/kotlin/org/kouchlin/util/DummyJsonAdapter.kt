@@ -27,7 +27,7 @@ class DummyJsonAdapter : JsonAdapter {
         throw UnsupportedOperationException()
     }
 
-    override fun deserializeDBUpdates() = deserialize(DBUpdates::class.java)
+    override fun deserializeDBUpdates() = deserialize(DBUpdates::class.java as Class<DBUpdates<DBUpdatesResult>>)
     override fun deserializeDBInfo() = deserialize(DBInfo::class.java)
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> deserializeChanges(docType: Class<T>?) = deserialize(Changes::class.java as Class<Changes<T>>)

@@ -3,6 +3,7 @@ package org.kouchlin.test.shared
 import org.junit.Test
 import org.kouchlin.CouchDB
 import org.kouchlin.util.STATUS
+import kotlin.test.assertTrue
 
 fun couchDBUpTest(couchdb: CouchDB) {
     assert(couchdb.up())
