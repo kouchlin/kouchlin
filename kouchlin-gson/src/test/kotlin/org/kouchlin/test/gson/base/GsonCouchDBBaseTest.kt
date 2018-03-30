@@ -13,7 +13,7 @@ open class GsonCouchDBBaseTest {
 		@JvmStatic
 		fun setUpClass() {
 			CouchDB.adapter = GsonJsonAdapter()
-			couchdb = CouchDB("http://localhost:5984")
+			couchdb = CouchDB("http://127.0.0.1:5984")
 			couchdb.database("kouchlin-test-db").create()
 		}
 

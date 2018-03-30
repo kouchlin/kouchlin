@@ -6,9 +6,8 @@ import kotlin.test.assertTrue
 
 fun replicationTest(couchdb: CouchDB) {
 
-    val (response, status) = couchdb.replication().source("kouchlin-test-db")
-            .target("kouchlin-target-db")
-            .continuous(true)
+    val (response, status) = couchdb.replication().source("http://127.0.0.1:5984/kouchlin-test-db")
+            .target("http://127.0.0.1:5984/kouchlin-target-db")
             .createTarget(true)
             .trigger()
 
