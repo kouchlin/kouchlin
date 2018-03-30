@@ -19,9 +19,10 @@ targetCompatibility = JavaVersion.VERSION_1_8
 dependencies {
     compile "com.github.kittinunf.fuel:fuel-jackson:$fuelVersion"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    compile 'io.github.microutils:kotlin-logging:1.4.9'
     compile project(':kouchlin')
     testCompile project(':kouchlin').sourceSets.test.output
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
     testCompile "junit:junit:$junitVersion"
     testRuntime 'org.slf4j:slf4j-simple:1.7.5'
     testCompile "io.mockk:mockk:1.7.15"
