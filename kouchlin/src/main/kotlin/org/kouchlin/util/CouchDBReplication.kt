@@ -1,9 +1,10 @@
 package org.kouchlin.util
 
+import com.github.kittinunf.fuel.core.FuelError
+import com.github.kittinunf.fuel.core.HttpException
 import com.github.kittinunf.fuel.httpPost
 import mu.KotlinLogging
 import org.kouchlin.CouchDB
-import org.kouchlin.domain.HistoryEntry
 import org.kouchlin.domain.ReplicationResponse
 
 internal const val REPLICATION_ENDPOINT = "/_replicate";
@@ -39,23 +40,29 @@ class CouchDBReplication(val server: CouchDB) {
     fun target(target: String): CouchDBReplication = apply { this.target = target }
 
     fun trigger(): Pair<ReplicationResponse<*>?, STATUS> {
-        val headers = configureHeaders(contentType = APPLICATION_JSON)
+        try {
+            val headers = configureHeaders(contentType = APPLICATION_JSON)
 
-        val requestContent = CouchDB.adapter.serializeReplicationRequest(cancel,
-                continuous,
-                createTarget,
-                docIds,
-                filter,
-                proxy,
-                source,
-                target)
+            val requestContent = CouchDB.adapter.serializeReplicationRequest(cancel,
+                    continuous,
+                    createTarget,
+                    docIds,
+                    filter,
+                    proxy,
+                    source,
+                    target)
 
-        val (request, response, result) = replicatorUri.httpPost()
-                .configureAuthentication(server)
-                .header(headers)
-                .body(requestContent)
-                .responseObject(CouchDB.adapter.deserializeReplicationResponse())
-        logger.info { request.cUrlString() }
-        return Pair(result.get() , response.toStatus())
+            val (request, response, result) = replicatorUri.httpPost()
+                    .configureAuthentication(server)
+                    .header(headers)
+                    .body(requestContent)
+                    .responseObject(CouchDB.adapter.deserializeReplicationResponse())
+
+            logger.info { request.cUrlString() }
+            return Pair(result.get(), response.toStatus())
+        } catch (e: FuelError) {
+            return Pair(null, e.response.toStatus())
+        }
+
     }
 }
