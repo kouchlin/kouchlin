@@ -3,6 +3,7 @@ package org.kouchlin.test.shared
 import org.kouchlin.CouchDB
 import org.kouchlin.util.STATUS
 import java.nio.charset.Charset
+import kotlin.test.assertTrue
 
 
     fun saveAttachmentTest(couchdb: CouchDB) {
@@ -13,27 +14,27 @@ import java.nio.charset.Charset
         try {
             val document = database.document("test")
             val (response, _, status) = document.save(content = "{}")
-            assert(status == STATUS.CREATED)
-            assert(response!!.rev.isNotBlank())
+            assertTrue(status == STATUS.CREATED)
+            assertTrue(response!!.rev.isNotBlank())
 
             val attachmentRef = document.attachment("att1")
 
             val (result, _, status2) = attachmentRef.save(data = "This is an attachment", contentType = "text/plain", rev = response.rev)
-            assert(status2 == STATUS.CREATED)
-            assert(result?.rev?.isNotBlank() ?: false)
+            assertTrue(status2 == STATUS.CREATED)
+            assertTrue(result?.rev?.isNotBlank() ?: false)
 
             val (attachment, etag, status3) = attachmentRef.get()
-            assert(status3 == STATUS.OK)
-            assert(etag?.isNotBlank() ?: false)
-            assert(attachment!!.contentType == "text/plain")
-            assert(attachment.data.toString(Charset.defaultCharset()) == "This is an attachment")
+            assertTrue(status3 == STATUS.OK)
+            assertTrue(etag?.isNotBlank() ?: false)
+            assertTrue(attachment!!.contentType == "text/plain")
+            assertTrue(attachment.data.toString(Charset.defaultCharset()) == "This is an attachment")
 
             val (result4, _, status4) = attachmentRef.delete(result?.rev)
-            assert(status4 == STATUS.OK)
-            assert(result4?.rev?.isNotBlank() ?: false)
+            assertTrue(status4 == STATUS.OK)
+            assertTrue(result4?.rev?.isNotBlank() ?: false)
 
             val (_, _, status5) = attachmentRef.get()
-            assert(status5 == STATUS.NOT_FOUND)
+            assertTrue(status5 == STATUS.NOT_FOUND)
 
         } finally {
             database.delete()

@@ -6,6 +6,7 @@ import org.junit.Test
 import org.kouchlin.test.base.CouchDBBaseMockTest
 import org.kouchlin.test.base.mock
 import org.kouchlin.util.STATUS
+import kotlin.test.assertTrue
 
 class BasicCouchDBMockTest : CouchDBBaseMockTest() {
 
@@ -14,11 +15,11 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
 
         val slot = FuelManager.instance.mock(200, "OK", "")
 
-        assert(couchdb.up())
+        assertTrue(couchdb.up())
 
         with(slot.captured) {
-            assert(method == Method.GET)
-            assert(path == "_up")
+            assertTrue(method == Method.GET)
+            assertTrue(path == "_up")
         }
     }
 
@@ -27,11 +28,11 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
 
         val slot = FuelManager.instance.mock(404, "", "")
 
-        assert(!couchdb.up())
+        assertTrue(!couchdb.up())
 
         with(slot.captured) {
-            assert(method == Method.GET)
-            assert(path == "_up")
+            assertTrue(method == Method.GET)
+            assertTrue(path == "_up")
         }
     }
 
@@ -40,11 +41,11 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
         val slot = FuelManager.instance.mock(200)
 
         val database = couchdb.database("kouchlin-test-db")
-        assert(database.exists() == STATUS.OK)
+        assertTrue(database.exists() == STATUS.OK)
 
         with(slot.captured) {
-            assert(method == Method.HEAD)
-            assert(path == "kouchlin-test-db")
+            assertTrue(method == Method.HEAD)
+            assertTrue(path == "kouchlin-test-db")
         }
     }
 
@@ -53,11 +54,11 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
         val slot = FuelManager.instance.mock(404)
 
         val database = couchdb.database("kouchlin-test-db")
-        assert(database.exists() == STATUS.NOT_FOUND)
+        assertTrue(database.exists() == STATUS.NOT_FOUND)
 
         with(slot.captured) {
-            assert(method == Method.HEAD)
-            assert(path == "kouchlin-test-db")
+            assertTrue(method == Method.HEAD)
+            assertTrue(path == "kouchlin-test-db")
         }
     }
 
@@ -66,10 +67,10 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
         val slot = FuelManager.instance.mock(202,
                 json = "{ \"ok\": true }")
         val database = couchdb.database("kouchlin-test-db")
-        assert(database.compact())
+        assertTrue(database.compact())
         with(slot.captured) {
-            assert(method == Method.POST)
-            assert(path == "kouchlin-test-db/_compact")
+            assertTrue(method == Method.POST)
+            assertTrue(path == "kouchlin-test-db/_compact")
         }
     }
 
@@ -78,10 +79,10 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
         val slot = FuelManager.instance.mock(statusCode = 404,
                 json = "{ \"ok\": false }")
         val database = couchdb.database("kouchlin-test-db")
-        assert(!database.compact())
+        assertTrue(!database.compact())
         with(slot.captured) {
-            assert(method == Method.POST)
-            assert(path == "kouchlin-test-db/_compact")
+            assertTrue(method == Method.POST)
+            assertTrue(path == "kouchlin-test-db/_compact")
         }
     }
 
@@ -90,10 +91,10 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
         val slot = FuelManager.instance.mock(statusCode = 202,
                 json = "{ \"ok\": true }")
         val database = couchdb.database("kouchlin-test-db")
-        assert(database.compact("ddoc"))
+        assertTrue(database.compact("ddoc"))
         with(slot.captured) {
-            assert(method == Method.POST)
-            assert(path == "kouchlin-test-db/_compact/ddoc")
+            assertTrue(method == Method.POST)
+            assertTrue(path == "kouchlin-test-db/_compact/ddoc")
         }
     }
 
@@ -102,10 +103,10 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
         val slot = FuelManager.instance.mock(statusCode = 201,
                 json = "{ \"ok\": true }")
         val database = couchdb.database("kouchlin-test-db")
-        assert(database.ensureFullCommit())
+        assertTrue(database.ensureFullCommit())
         with(slot.captured) {
-            assert(method == Method.POST)
-            assert(path == "kouchlin-test-db/_ensure_full_commit")
+            assertTrue(method == Method.POST)
+            assertTrue(path == "kouchlin-test-db/_ensure_full_commit")
         }
     }
 
@@ -126,10 +127,10 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
         val slot = FuelManager.instance.mock(statusCode = 201,
                 json = "{ \"ok\": true }")
         val database = couchdb.database("kouchlin-test-db")
-        assert(database.create() == STATUS.CREATED)
+        assertTrue(database.create() == STATUS.CREATED)
         with(slot.captured) {
-            assert(method == Method.PUT)
-            assert(path == "kouchlin-test-db")
+            assertTrue(method == Method.PUT)
+            assertTrue(path == "kouchlin-test-db")
         }
     }
 
@@ -138,10 +139,10 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
         val slot = FuelManager.instance.mock(statusCode = 400,
                 json = "{ \"error\":\"invalid_db_name\",\"message\":\"invalid db name\" }")
         val database = couchdb.database("kouchlin-test-db")
-        assert(database.create() == STATUS.BAD_REQUEST)
+        assertTrue(database.create() == STATUS.BAD_REQUEST)
         with(slot.captured) {
-            assert(method == Method.PUT)
-            assert(path == "kouchlin-test-db")
+            assertTrue(method == Method.PUT)
+            assertTrue(path == "kouchlin-test-db")
         }
     }
 }

@@ -5,7 +5,7 @@ import com.github.kittinunf.fuel.core.Method
 import org.kouchlin.CouchDB
 import org.kouchlin.test.base.mock
 import org.kouchlin.util.STATUS
-import org.junit.Assert.assertTrue
+import kotlin.test.assertTrue
 
 fun couchDBVersionTestMockedTest(couchdb: CouchDB) {
 
@@ -13,11 +13,11 @@ fun couchDBVersionTestMockedTest(couchdb: CouchDB) {
             "OK",
             "{\"couchdb\":\"Welcome\",\"version\":\"2.1.1\",\"vendor\":{\"name\":\"The Apache Software Foundation\"}}")
 
-    assert(couchdb.version()!!.startsWith("2"))
+    assertTrue(couchdb.version()!!.startsWith("2"))
 
     with(slot.captured) {
-        assert(method == Method.GET)
-        assert(path == "")
+        assertTrue(method == Method.GET)
+        assertTrue(path == "")
     }
 }
 
@@ -37,11 +37,11 @@ fun couchDBAllDBsMockTest(couchdb: CouchDB) {
             json)
 
     val dbs = couchdb.databases()?.size
-    assert(dbs != null && dbs == 5)
+    assertTrue(dbs != null && dbs == 5)
 
     with(slot.captured) {
-        assert(method == Method.GET)
-        assert(path == "_all_dbs")
+        assertTrue(method == Method.GET)
+        assertTrue(path == "_all_dbs")
     }
 }
 
@@ -104,11 +104,11 @@ fun dbInfoMockTest(couchdb: CouchDB) {
             json)
 
     val database = couchdb.database("receipts")
-    assert(database.info().component1()?.dbName == "receipts")
+    assertTrue(database.info().component1()?.dbName == "receipts")
 
     with(slot.captured) {
-        assert(method == Method.GET)
-        assert(path == "receipts")
+        assertTrue(method == Method.GET)
+        assertTrue(path == "receipts")
     }
 }
 

@@ -1,20 +1,20 @@
 package org.kouchlin.test.shared
 
-import org.junit.Test
 import org.kouchlin.CouchDB
 import org.kouchlin.util.STATUS
+import kotlin.test.assertTrue
 
 fun existsDocTest(couchdb: CouchDB) {
     val database = couchdb.database("kouchlin-test-db")
-    val (size, etag, status) = database.document("test1").exists()
-    assert(status == STATUS.NOT_FOUND)
+    val (_, _, status) = database.document("test1").exists()
+    assertTrue(status == STATUS.NOT_FOUND)
 }
 
 fun getDocTest(couchdb: CouchDB) {
-    var database = couchdb.database("kouchlin-test-db")
-    var (_, _, status) = database.document("test2")
+    val database = couchdb.database("kouchlin-test-db")
+    val (_, _, status) = database.document("test2")
             .get<String>(attachment = true, attsSince = listOf("1-aaa", "2-bbb", "3-ccc"))
-    assert(status == STATUS.NOT_FOUND)
+    assertTrue(status == STATUS.NOT_FOUND)
 }
 
 fun putDocTest(couchdb: CouchDB) {
@@ -23,12 +23,12 @@ fun putDocTest(couchdb: CouchDB) {
 					"a":1
 					}"""
     val (_, _, status) = database.document("test").save(content = doc)
-    assert(status == STATUS.CREATED)
+    assertTrue(status == STATUS.CREATED)
 
     val (size, etag, status2) = database.document("test").exists()
-    assert(status2 == STATUS.OK)
-    assert((size ?: 0) > 0)
-    assert(etag != null)
+    assertTrue(status2 == STATUS.OK)
+    assertTrue((size ?: 0) > 0)
+    assertTrue(etag != null)
 }
 
 fun putDocTest2(couchdb: CouchDB) {
@@ -38,21 +38,21 @@ fun putDocTest2(couchdb: CouchDB) {
 					}"""
     val (_, _, status) = database.document().save(content = doc)
 
-    assert(status == STATUS.CREATED)
+    assertTrue(status == STATUS.CREATED)
 }
 
 fun <T : Any> putDocTestFromObject(couchdb: CouchDB, factory: (String?, String?, String) -> T) {
     val database = couchdb.database("kouchlin-test-db")
     val doc = factory("test_with_id", null, "value")
     val (_, _, status) = database.document().save(content = doc)
-    assert(status == STATUS.CREATED)
+    assertTrue(status == STATUS.CREATED)
 }
 
 fun <T : Any> postDocTestFromObject(couchdb: CouchDB, factory: (String?, String?, String) -> T) {
     val database = couchdb.database("kouchlin-test-db")
     val doc = factory(null, null, "value")
     val (_, _, status) = database.document().save(content = doc)
-    assert(status == STATUS.CREATED)
+    assertTrue(status == STATUS.CREATED)
 }
 
 fun allDocsTest(couchdb: CouchDB) {
@@ -61,10 +61,10 @@ fun allDocsTest(couchdb: CouchDB) {
 					"a":1
 					}"""
     val (_, _, status) = database.document("test-all-docs").save(content = doc)
-    assert(status == STATUS.CREATED)
+    assertTrue(status == STATUS.CREATED)
 
-    val (result, status2) = database.allDocs<Any>()
-    assert(result?.rows!!.isNotEmpty())
+    val (result, _) = database.allDocs<Any>()
+    assertTrue(result?.rows!!.isNotEmpty())
 }
 
 inline fun <reified T : Any> allDocsTestObject(couchdb: CouchDB, factory: (String?, String?, String) -> T) {
@@ -77,12 +77,12 @@ inline fun <reified T : Any> allDocsTestObject(couchdb: CouchDB, factory: (Strin
     val docs = listOf(doc1, doc2, doc3)
 
     val (_, status) = database.bulkDocs(docs, true)
-    assert(status == STATUS.CREATED)
+    assertTrue(status == STATUS.CREATED)
 
     val (result, status2) = database.allDocs<T>(includeDocs = true)
-    assert(status2 == STATUS.OK)
-    assert(result?.rows!!.isNotEmpty())
-    assert(result.rows.first().doc is T)
+    assertTrue(status2 == STATUS.OK)
+    assertTrue(result?.rows!!.isNotEmpty())
+    assertTrue(result.rows.first().doc is T)
 }
 
 fun <T : Any> bulkDocsTest(couchdb: CouchDB, factory: (String?, String?, String) -> T) {
@@ -94,6 +94,6 @@ fun <T : Any> bulkDocsTest(couchdb: CouchDB, factory: (String?, String?, String)
 
     val docs = listOf(doc1, doc2, doc3)
     val (result, status) = database.bulkDocs(docs, true)
-    assert(status == STATUS.CREATED)
-    assert(result?.size == 3)
+    assertTrue(status == STATUS.CREATED)
+    assertTrue(result?.size == 3)
 }

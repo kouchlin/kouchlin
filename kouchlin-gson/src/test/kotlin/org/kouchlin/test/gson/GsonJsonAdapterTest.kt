@@ -2,6 +2,7 @@ package org.kouchlin.test.gson
 
 import org.junit.Test
 import org.kouchlin.gson.GsonJsonAdapter
+import kotlin.test.assertTrue
 
 class GsonAdapterTest {
 
@@ -12,9 +13,9 @@ class GsonAdapterTest {
         val testDoc = DummyJson("id1", "rev1", "value")
 
         val (id, rev, content) = adapter.findDocumentIdRev(testDoc)
-        assert(content != null)
-        assert(id == "id1")
-        assert(rev == "rev1")
+        assertTrue(content != null)
+        assertTrue(id == "id1")
+        assertTrue(rev == "rev1")
     }
 
     @Test
@@ -24,8 +25,8 @@ class GsonAdapterTest {
         val testDoc = DummyJson(foo = "value")
 
         val (id, rev) = adapter.findDocumentIdRev(testDoc)
-        assert(id == null)
-        assert(rev == null)
+        assertTrue(id == null)
+        assertTrue(rev == null)
     }
 
     @Test
@@ -35,13 +36,13 @@ class GsonAdapterTest {
         val testDoc = DummyJson("id1", "rev1", "value")
 
         val (id, rev, content) = adapter.deleteDocumentIdRev(testDoc)
-        assert(content != null)
-        assert(id == "id1")
-        assert(rev == "rev1")
+        assertTrue(content != null)
+        assertTrue(id == "id1")
+        assertTrue(rev == "rev1")
 
         val deserialized = adapter.deserialize<DummyJson>(content!!, DummyJson::class.java)
-        assert(deserialized.id == null)
-        assert(deserialized.rev == null)
+        assertTrue(deserialized.id == null)
+        assertTrue(deserialized.rev == null)
 
     }
 
@@ -52,12 +53,12 @@ class GsonAdapterTest {
         val testDoc = DummyJson(foo = "value")
 
         val (id, rev, content) = adapter.deleteDocumentIdRev(testDoc)
-        assert(content != null)
-        assert(id == null)
-        assert(rev == null)
+        assertTrue(content != null)
+        assertTrue(id == null)
+        assertTrue(rev == null)
 
         val deserialized = adapter.deserialize<DummyJson>(content!!, DummyJson::class.java)
-        assert(deserialized.id == null)
-        assert(deserialized.rev == null)
+        assertTrue(deserialized.id == null)
+        assertTrue(deserialized.rev == null)
     }
 }
