@@ -61,10 +61,10 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
                 .configureAuthentication(db.server)
                 .header(headers)
 
-        val (_, response, result) = if (String::class.java is T)
-            request.responseString()
-        else
-            request.responseObject(CouchDB.adapter.deserialize(T::class.java))
+        val (_, response, result) = when (T::class.java) {
+            String::class.java -> request.responseString()
+            else -> request.responseObject(CouchDB.adapter.deserialize(T::class.java))
+        }
 
         val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
 
@@ -109,7 +109,7 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
                 batch = batch,
                 newEdits = newEdits)
                 .encodeQueryString()
-                .let { if (it.isNotEmpty()) "?&it" else it }
+                .let { if (it.isNotEmpty()) "?$it" else it }
 
         val documentUriWithParams = "${db.dbName}/${(id ?: docId).orEmpty()}$queryString"
         val (request, response, result) = documentUriWithParams.httpPut()
@@ -128,7 +128,6 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
         return if (id != null || docId != null) {
             saveWithPut(rev, batch, newEdits, content)
         } else {
-            assert(rev == null)
             saveWithPost(batch, content)
         }
     }

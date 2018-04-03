@@ -73,7 +73,7 @@ class CouchDatabaseView(val db: CouchDatabase, val view: String) {
 				.configureAuthentication(db.server)
 				.responseObject(CouchDB.adapter.deserializeViewResults<V, D>(V::class.java, D::class.java))
 
-		return Pair(result.component1(), response.toStatus())
+		return Pair(result.get(), response.toStatus())
 	}
 
 }

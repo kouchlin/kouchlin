@@ -33,212 +33,211 @@ private val logger = KotlinLogging.logger {}
 
 class CouchDatabase(val server: CouchDB, val dbName: String) {
 
-	internal var compact_uri = "$dbName$COMPACT_ENDPOINT";
-	internal var ensureFullCommitUri = "$dbName$ENSURE_FULL_COMMIT_ENDPOINT"
-	internal var bulkDocsUri = "$dbName$BULK_DOCS_ENDPOINT"
-	var changesUri = "$dbName$CHANGES_ENDPOINT"
+    internal var compact_uri = "$dbName$COMPACT_ENDPOINT";
+    internal var ensureFullCommitUri = "$dbName$ENSURE_FULL_COMMIT_ENDPOINT"
+    internal var bulkDocsUri = "$dbName$BULK_DOCS_ENDPOINT"
+    var changesUri = "$dbName$CHANGES_ENDPOINT"
 
-	fun exists(): STATUS {
-		val (_, response, _) = Fuel.head(dbName).configureAuthentication(server).response();
-		return response.toStatus()
-	}
+    fun exists(): STATUS {
+        val (_, response, _) = Fuel.head(dbName).configureAuthentication(server).response();
+        return response.toStatus()
+    }
 
-	fun create(q: Int? = null): STATUS {
-		val parameters = configureParameters(q = q)
-		val (_, response, _) = dbName.httpPut(parameters).configureAuthentication(server).response();
-		return response.toStatus()
-	}
+    fun create(q: Int? = null): STATUS {
+        val parameters = configureParameters(q = q)
+        val (_, response, _) = dbName.httpPut(parameters).configureAuthentication(server).response();
+        return response.toStatus()
+    }
 
-	fun delete(): STATUS {
-		val (_, response, _) = dbName.httpDelete().configureAuthentication(server).response();
-		return response.toStatus()
-	}
+    fun delete(): STATUS {
+        val (_, response, _) = dbName.httpDelete().configureAuthentication(server).response();
+        return response.toStatus()
+    }
 
-	fun info(): Pair<DBInfo?, STATUS> {
-		val (_, response, result) = dbName.httpGet()
-				.configureAuthentication(server)
-				.responseObject(CouchDB.adapter.deserializeDBInfo());
+    fun info(): Pair<DBInfo?, STATUS> {
+        val (_, response, result) = dbName.httpGet()
+                .configureAuthentication(server)
+                .responseObject(CouchDB.adapter.deserializeDBInfo());
 
-		return Pair(result.component1(), response.toStatus())
-	}
+        return Pair(result.component1(), response.toStatus())
+    }
 
-	fun compact(ddoc: String? = null): Boolean {
-		val ddocCompactUri = "$compact_uri${ddoc?.let({ "/$ddoc" }).orEmpty()}"
-		val headers = configureHeaders(contentType = APPLICATION_JSON)
-		val (_, response, _) = ddocCompactUri.httpPost()
-				.configureAuthentication(server)
-				.header(headers).response()
-logger.info { response.statusCode }
-		return response.statusCode == 202
-	}
+    fun compact(ddoc: String? = null): Boolean {
+        val ddocCompactUri = "$compact_uri${ddoc?.let({ "/$ddoc" }).orEmpty()}"
+        val headers = configureHeaders(contentType = APPLICATION_JSON)
+        val (_, response, _) = ddocCompactUri.httpPost()
+                .configureAuthentication(server)
+                .header(headers).response()
+        logger.info { response.statusCode }
+        return response.statusCode == 202
+    }
 
-	fun ensureFullCommit(): Boolean {
-		val headers = configureHeaders(contentType = APPLICATION_JSON)
-		val (_, response, _) = ensureFullCommitUri.httpPost()
-				.configureAuthentication(server)
-				.header(headers).response();
+    fun ensureFullCommit(): Boolean {
+        val headers = configureHeaders(contentType = APPLICATION_JSON)
+        val (_, response, _) = ensureFullCommitUri.httpPost()
+                .configureAuthentication(server)
+                .header(headers).response()
 
-		return response.statusCode == 201
-	}
+        return response.statusCode == 201
+    }
 
-	inline fun <reified T> allDocs(conflicts: Boolean? = null,
-								   descending: Boolean? = null,
-								   endKey: String? = null,
-								   endKeyDocId: String? = null,
-								   group: Boolean? = null,
-								   groupLevel: Int? = null,
-								   includeDocs: Boolean? = null,
-								   attachments: Boolean? = null,
-								   attEncodingInfo: Boolean? = null,
-								   inclusiveEnd: Boolean? = null,
-								   key: String? = null,
-								   keys: List<String>? = null,
-								   limit: Int? = null,
-								   reduce: Boolean? = null,
-								   skip: Int? = null,
-								   sorted: Boolean? = null,
-								   stable: Boolean? = null,
-								   stale: String? = null, /* ok,update_after,false*/
-								   startKey: String? = null,
-								   startKeyDocId: String? = null,
-								   update: String? = null, /*true,false,lazy*/
-								   updateSeq: Boolean? = null
-	): Pair<ViewResult<ViewResultRow<ViewRevRow, T>>?, STATUS?> {
+    inline fun <reified T> allDocs(conflicts: Boolean? = null,
+                                   descending: Boolean? = null,
+                                   endKey: String? = null,
+                                   endKeyDocId: String? = null,
+                                   group: Boolean? = null,
+                                   groupLevel: Int? = null,
+                                   includeDocs: Boolean? = null,
+                                   attachments: Boolean? = null,
+                                   attEncodingInfo: Boolean? = null,
+                                   inclusiveEnd: Boolean? = null,
+                                   key: String? = null,
+                                   keys: List<String>? = null,
+                                   limit: Int? = null,
+                                   reduce: Boolean? = null,
+                                   skip: Int? = null,
+                                   sorted: Boolean? = null,
+                                   stable: Boolean? = null,
+                                   stale: String? = null, /* ok,update_after,false*/
+                                   startKey: String? = null,
+                                   startKeyDocId: String? = null,
+                                   update: String? = null, /*true,false,lazy*/
+                                   updateSeq: Boolean? = null
+    ): Pair<ViewResult<ViewResultRow<ViewRevRow, T>>?, STATUS?> {
 
-		return CouchDatabaseView(this, "_all_docs").get<ViewRevRow, T>(conflicts = conflicts,
-				descending = descending,
-				endKey = endKey,
-				endKeyDocId = endKeyDocId,
-				group = group,
-				groupLevel = groupLevel,
-				includeDocs = includeDocs,
-				attachments = attachments,
-				attEncodingInfo = attEncodingInfo,
-				inclusiveEnd = inclusiveEnd,
-				key = key,
-				keys = keys,
-				limit = limit,
-				reduce = reduce,
-				skip = skip,
-				sorted = sorted,
-				stable = stable,
-				stale = stale,
-				startKey = startKey,
-				startKeyDocId = startKeyDocId,
-				update = update,
-				updateSeq = updateSeq)
+        return CouchDatabaseView(this, "_all_docs").get<ViewRevRow, T>(conflicts = conflicts,
+                descending = descending,
+                endKey = endKey,
+                endKeyDocId = endKeyDocId,
+                group = group,
+                groupLevel = groupLevel,
+                includeDocs = includeDocs,
+                attachments = attachments,
+                attEncodingInfo = attEncodingInfo,
+                inclusiveEnd = inclusiveEnd,
+                key = key,
+                keys = keys,
+                limit = limit,
+                reduce = reduce,
+                skip = skip,
+                sorted = sorted,
+                stable = stable,
+                stale = stale,
+                startKey = startKey,
+                startKeyDocId = startKeyDocId,
+                update = update,
+                updateSeq = updateSeq)
 
-	}
+    }
 
-	inline fun <reified T> designDocs(conflicts: Boolean? = null,
-									  descending: Boolean? = null,
-									  endKey: String? = null,
-									  endKeyDocId: String? = null,
-									  group: Boolean? = null,
-									  groupLevel: Int? = null,
-									  includeDocs: Boolean? = null,
-									  attachments: Boolean? = null,
-									  attEncodingInfo: Boolean? = null,
-									  inclusiveEnd: Boolean? = null,
-									  key: String? = null,
-									  keys: List<String>? = null,
-									  limit: Int? = null,
-									  reduce: Boolean? = null,
-									  skip: Int? = null,
-									  sorted: Boolean? = null,
-									  stable: Boolean? = null,
-									  stale: String? = null, /* ok,update_after,false*/
-									  startKey: String? = null,
-									  startKeyDocId: String? = null,
-									  update: String? = null, /*true,false,lazy*/
-									  updateSeq: Boolean? = null
-	): Pair<ViewResult<ViewResultRow<ViewRevRow, T>>?, STATUS?> {
+    inline fun <reified T> designDocs(conflicts: Boolean? = null,
+                                      descending: Boolean? = null,
+                                      endKey: String? = null,
+                                      endKeyDocId: String? = null,
+                                      group: Boolean? = null,
+                                      groupLevel: Int? = null,
+                                      includeDocs: Boolean? = null,
+                                      attachments: Boolean? = null,
+                                      attEncodingInfo: Boolean? = null,
+                                      inclusiveEnd: Boolean? = null,
+                                      key: String? = null,
+                                      keys: List<String>? = null,
+                                      limit: Int? = null,
+                                      reduce: Boolean? = null,
+                                      skip: Int? = null,
+                                      sorted: Boolean? = null,
+                                      stable: Boolean? = null,
+                                      stale: String? = null, /* ok,update_after,false*/
+                                      startKey: String? = null,
+                                      startKeyDocId: String? = null,
+                                      update: String? = null, /*true,false,lazy*/
+                                      updateSeq: Boolean? = null
+    ): Pair<ViewResult<ViewResultRow<ViewRevRow, T>>?, STATUS?> {
 
-		return CouchDatabaseView(this, "_design_docs").get<ViewRevRow, T>(conflicts = conflicts,
-				descending = descending,
-				endKey = endKey,
-				endKeyDocId = endKeyDocId,
-				group = group,
-				groupLevel = groupLevel,
-				includeDocs = includeDocs,
-				attachments = attachments,
-				attEncodingInfo = attEncodingInfo,
-				inclusiveEnd = inclusiveEnd,
-				key = key,
-				keys = keys,
-				limit = limit,
-				reduce = reduce,
-				skip = skip,
-				sorted = sorted,
-				stable = stable,
-				stale = stale,
-				startKey = startKey,
-				startKeyDocId = startKeyDocId,
-				update = update,
-				updateSeq = updateSeq)
+        return CouchDatabaseView(this, "_design_docs").get<ViewRevRow, T>(conflicts = conflicts,
+                descending = descending,
+                endKey = endKey,
+                endKeyDocId = endKeyDocId,
+                group = group,
+                groupLevel = groupLevel,
+                includeDocs = includeDocs,
+                attachments = attachments,
+                attEncodingInfo = attEncodingInfo,
+                inclusiveEnd = inclusiveEnd,
+                key = key,
+                keys = keys,
+                limit = limit,
+                reduce = reduce,
+                skip = skip,
+                sorted = sorted,
+                stable = stable,
+                stale = stale,
+                startKey = startKey,
+                startKeyDocId = startKeyDocId,
+                update = update,
+                updateSeq = updateSeq)
 
-	}
+    }
 
-	@Suppress("UNCHECKED_CAST") 
-	fun <T : Any> bulkDocs(docs: List<T>, newEdits: Boolean? = null): Pair<List<BulkDocsResult>?, STATUS> {
-		val headers = configureHeaders(contentType = APPLICATION_JSON)
-		val jsonContent = CouchDB.adapter.serializeBulkDocs<T>(docs, newEdits)
-		
-		val (_, response, result) = bulkDocsUri.httpPost()
-				.configureAuthentication(server)
-				.header(headers)
-				.body(jsonContent)
-				.responseObject(CouchDB.adapter.deserialize<List<BulkDocsResult>>(List::class.java as Class<List<BulkDocsResult>>))
-		return Pair(result.component1(), response.toStatus())
-	}
+    fun <T : Any> bulkDocs(docs: List<T>, newEdits: Boolean? = null): Pair<List<BulkDocsResult>?, STATUS> {
+        val headers = configureHeaders(contentType = APPLICATION_JSON)
+        val jsonContent = CouchDB.adapter.serializeBulkDocs(docs, newEdits)
 
-	inline fun <reified T : Any> changes(docIds: List<String>? = null,
-										 conflicts: Boolean? = null,
-										 descending: Boolean? = null,
-										 feed: Feed? = null,
-										 filter: String? = null,
-										 heartbeat: Long? = null,
-										 includeDocs: Boolean? = null,
-										 attachments: Boolean? = null,
-										 attEncodingInfo: Boolean? = null,
-										 lastEventId: String? = null,
-										 limit: Long? = null,
-										 since: String? = null,
-										 style: String? = null,
-										 timeout: Long? = null,
-										 view: String? = null,
-										 seqInterval: Long? = null,
-										 etag: String? = null): Triple<Changes<T>?, String?, STATUS?> {
+        val (_, response, result) = bulkDocsUri.httpPost()
+                .configureAuthentication(server)
+                .header(headers)
+                .body(jsonContent)
+                .responseObject(CouchDB.adapter.deserializeBulkDocsResult())
+        return Pair(result.get(), response.toStatus())
+    }
 
-		val headers = configureHeaders(etag = etag)
+    inline fun <reified T : Any> changes(docIds: List<String>? = null,
+                                         conflicts: Boolean? = null,
+                                         descending: Boolean? = null,
+                                         feed: Feed? = null,
+                                         filter: String? = null,
+                                         heartbeat: Long? = null,
+                                         includeDocs: Boolean? = null,
+                                         attachments: Boolean? = null,
+                                         attEncodingInfo: Boolean? = null,
+                                         lastEventId: String? = null,
+                                         limit: Long? = null,
+                                         since: String? = null,
+                                         style: String? = null,
+                                         timeout: Long? = null,
+                                         view: String? = null,
+                                         seqInterval: Long? = null,
+                                         etag: String? = null): Triple<Changes<T>?, String?, STATUS?> {
 
-		val parameters = configureChangesParametes(docIds,
-				conflicts,
-				descending,
-				feed,
-				filter,
-				heartbeat,
-				includeDocs,
-				attachments,
-				attEncodingInfo,
-				lastEventId,
-				limit,
-				since,
-				style,
-				timeout,
-				view,
-				seqInterval)
+        val headers = configureHeaders(etag = etag)
 
-		val (_, response, result) = changesUri.httpGet(parameters)
-				.header(headers)
-				.configureAuthentication(server)
-				.responseObject(CouchDB.adapter.deserializeChanges<T>(T::class.java))
+        val parameters = configureChangesParametes(docIds,
+                conflicts,
+                descending,
+                feed,
+                filter,
+                heartbeat,
+                includeDocs,
+                attachments,
+                attEncodingInfo,
+                lastEventId,
+                limit,
+                since,
+                style,
+                timeout,
+                view,
+                seqInterval)
 
-		val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
+        val (_, response, result) = changesUri.httpGet(parameters)
+                .header(headers)
+                .configureAuthentication(server)
+                .responseObject(CouchDB.adapter.deserializeChanges<T>(T::class.java))
 
-		return Triple(result.component1(), responseEtag, response.toStatus())
-	}
+        val responseEtag = response.getHeaderValue<String?>(ETAG_HEADER)
 
-	fun document(id: String? = null, rev: String? = null) = CouchDatabaseDocument(this, id, rev)
+        return Triple(result.component1(), responseEtag, response.toStatus())
+    }
+
+    fun document(id: String? = null, rev: String? = null) = CouchDatabaseDocument(this, id, rev)
 
 }

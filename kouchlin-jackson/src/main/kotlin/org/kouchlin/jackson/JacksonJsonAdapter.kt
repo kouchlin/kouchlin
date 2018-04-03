@@ -71,11 +71,18 @@ class JacksonJsonAdapter : JsonAdapter {
         }
     }
 
+    override fun deserializeBulkDocsResult(): ResponseDeserializable<List<BulkDocsResult>> = object : ResponseDeserializable<List<BulkDocsResult>> {
+        override fun deserialize(reader: Reader): List<BulkDocsResult>? {
+            val changesResultType = mapper.typeFactory.constructParametricType(List::class.java, BulkDocsResult::class.java)
+            return mapper.readValue<List<BulkDocsResult>>(reader, changesResultType)
+        }
+    }
+
     override fun <V, T> deserializeViewResults(resultType: Class<V>?, docType: Class<T>?):
             ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> = object : ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> {
         override fun deserialize(reader: Reader): ViewResult<ViewResultRow<V, T>> {
             val viewResultRowType = mapper.typeFactory.constructParametricType(ViewResultRow::class.java, resultType, docType)
-            val viewResultType = mapper.typeFactory.constructParametricType(ViewResult::class.java, viewResultRowType)
+            val viewResultType = mapper.typeFactory.constructParametricType(JacksonViewResult::class.java, viewResultRowType)
             return mapper.readValue<ViewResult<ViewResultRow<V, T>>>(reader, viewResultType)
         }
     }

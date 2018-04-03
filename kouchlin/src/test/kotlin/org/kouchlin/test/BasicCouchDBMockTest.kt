@@ -5,6 +5,7 @@ import com.github.kittinunf.fuel.core.Method
 import org.junit.Test
 import org.kouchlin.test.base.CouchDBBaseMockTest
 import org.kouchlin.test.base.mock
+import org.kouchlin.test.shared.*
 import org.kouchlin.util.STATUS
 import kotlin.test.assertTrue
 
@@ -145,4 +146,19 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
             assertTrue(path == "kouchlin-test-db")
         }
     }
+
+    @Test
+    fun notExistsDocument() = notExistsDocMockTest(couchdb)
+
+    @Test
+    fun existsDocument() = existsDocMockTest(couchdb)
+
+    @Test
+    fun getNotExistStringDoc() = getNotFoundDocStringMockTest(couchdb)
+
+    @Test
+    fun getDocStringMockTest() = getDocStringMockTest(couchdb)
+
+    @Test
+    fun getDocStringParamsMockTest() = getDocStringParamsMockTest(couchdb)
 }

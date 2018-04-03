@@ -36,11 +36,18 @@ class GsonJsonAdapter : JsonAdapter {
         }
     }
 
+    override fun  deserializeBulkDocsResult(): ResponseDeserializable<List<BulkDocsResult>>  = object : ResponseDeserializable<List<BulkDocsResult>> {
+        override fun deserialize(reader: Reader): List<BulkDocsResult> {
+            val gson = Gson()
+            return  gson.fromJson<List<BulkDocsResult>>(reader, object : TypeToken<List<BulkDocsResult>>() {}.type)
+        }
+    }
+
     override fun <V, T> deserializeViewResults(resultType: Class<V>?, docType: Class<T>?):
             ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> = object : ResponseDeserializable<ViewResult<ViewResultRow<V, T>>> {
         override fun deserialize(reader: Reader): ViewResult<ViewResultRow<V, T>> {
             val gson = Gson()
-            val result = gson.fromJson<ViewResult<ViewResultRow<V, T>>>(reader, object : TypeToken<ViewResult<ViewResultRow<V, T>>>() {}.type)
+            val result = gson.fromJson<ViewResult<ViewResultRow<V, T>>>(reader, object : TypeToken<GsonViewResult<ViewResultRow<V, T>>>() {}.type)
             if (resultType != null) {
                 result.rows.map {
                     it.value = it.value?.let { value -> gson.fromJson<V>(gson.toJson(value), resultType) }
