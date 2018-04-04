@@ -18,5 +18,8 @@ class BasicCouchDBMockTest : JacksonCouchDBBaseMockTest() {
     fun dbInfoMockTest() = org.kouchlin.test.shared.dbInfoMockTest(couchdb)
 
     @Test
-    fun changesTest() = org.kouchlin.test.shared.changesMockTest(couchdb)
+    fun changesMockTest() = org.kouchlin.test.shared.changesMockTest(couchdb)
+
+    @Test
+    fun replicationMock() = org.kouchlin.test.shared.replicationMockTest(couchdb)
 }

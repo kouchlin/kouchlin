@@ -6,7 +6,7 @@ import org.kouchlin.domain.ReplicationResponse
 import java.util.*
 
 class JacksonHistoryEntry : HistoryEntry() {
-    @JsonProperty("docs_write_failures") override var docWriteFailures: Long? = null
+    @JsonProperty("doc_write_failures") override var docWriteFailures: Long? = null
     @JsonProperty("docs_read") override var docsRead: Long? = null
     @JsonProperty("docs_written") override var docsWritten: Long? = null
     @JsonProperty("end_last_seq") override var endLastSeq: String? = null

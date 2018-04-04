@@ -3,6 +3,7 @@ package org.kouchlin.gson
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.gson.gsonDeserializerOf
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import org.kouchlin.domain.*
@@ -11,6 +12,7 @@ import org.kouchlin.util.JsonAdapter
 import java.io.Reader
 
 class GsonJsonAdapter : JsonAdapter {
+
     override fun <T : Any> deserialize(c: Class<T>): ResponseDeserializable<T> = object : ResponseDeserializable<T> {
         override fun deserialize(reader: Reader): T = Gson().fromJson<T>(reader, c)
     }
@@ -36,10 +38,10 @@ class GsonJsonAdapter : JsonAdapter {
         }
     }
 
-    override fun  deserializeBulkDocsResult(): ResponseDeserializable<List<BulkDocsResult>>  = object : ResponseDeserializable<List<BulkDocsResult>> {
+    override fun deserializeBulkDocsResult(): ResponseDeserializable<List<BulkDocsResult>> = object : ResponseDeserializable<List<BulkDocsResult>> {
         override fun deserialize(reader: Reader): List<BulkDocsResult> {
             val gson = Gson()
-            return  gson.fromJson<List<BulkDocsResult>>(reader, object : TypeToken<List<BulkDocsResult>>() {}.type)
+            return gson.fromJson<List<BulkDocsResult>>(reader, object : TypeToken<List<BulkDocsResult>>() {}.type)
         }
     }
 
