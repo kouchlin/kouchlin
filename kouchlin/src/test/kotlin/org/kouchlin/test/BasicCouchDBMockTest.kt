@@ -1,8 +1,26 @@
+/*
+ * Copyright 2018 Kouchlin Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kouchlin.test
 
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Method
 import org.junit.Test
+import org.kouchlin.CouchDB
+import org.kouchlin.auth.BasicAuthentication
 import org.kouchlin.test.base.CouchDBBaseMockTest
 import org.kouchlin.test.base.mock
 import org.kouchlin.test.shared.*
@@ -145,6 +163,23 @@ class BasicCouchDBMockTest : CouchDBBaseMockTest() {
             assertTrue(method == Method.PUT)
             assertTrue(path == "kouchlin-test-db")
         }
+    }
+
+    @Test
+    fun basicAuthMockTest() {
+
+        val couchdbWithAuth = CouchDB("http://dummy-host:5984",
+                BasicAuthentication("test", "test"))
+
+        val slot = FuelManager.instance.mock(statusCode = 200,
+                json = "{ \"ok\": true }")
+        val database = couchdbWithAuth.database("kouchlin-test-db")
+        database.compact()
+
+        with(slot.captured) {
+            assert(this.headers["Authorization"]!!.startsWith("Basic"))
+        }
+
     }
 
     @Test
