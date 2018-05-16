@@ -17,8 +17,11 @@
 package org.kouchlin.test.gson.integration
 
 import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.kouchlin.test.base.RequireCouchDB
 import org.kouchlin.test.gson.base.GsonCouchDBBaseTest
 
+@Category(RequireCouchDB::class)
 class GsonReplicationTest : GsonCouchDBBaseTest() {
 
     @Test

@@ -17,9 +17,12 @@
 package org.kouchlin.test.gson.integration
 
 import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.kouchlin.test.base.RequireCouchDB
 import org.kouchlin.test.gson.base.GsonCouchDBBaseTest
 import org.kouchlin.test.gson.dummyJsonFactory
 
+@Category(RequireCouchDB::class)
 class GsonCouchDBDocumentCRUDTest : GsonCouchDBBaseTest() {
     @Test
     fun existsDocTest() = org.kouchlin.test.shared.existsDocTest(couchdb)

@@ -28,4 +28,16 @@ dependencies {
 
 test {
     testLogging.showStandardStreams = true
+    useJUnit {
+        excludeCategories \
+        'org.kouchlin.test.base.RequireCouchDB'
+    }
+}
+
+task integrationTest(type: Test, dependsOn: testClasses) {
+    testLogging.showStandardStreams = true
+    useJUnit {
+        excludeCategories \
+        'org.kouchlin.test.base.MockTest'
+    }
 }

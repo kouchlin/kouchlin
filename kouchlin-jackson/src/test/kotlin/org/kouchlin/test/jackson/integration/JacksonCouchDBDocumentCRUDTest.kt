@@ -17,9 +17,12 @@
 package org.kouchlin.test.jackson.integration
 
 import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.kouchlin.test.base.RequireCouchDB
 import org.kouchlin.test.jackson.base.JacksonCouchDBBaseTest
 import org.kouchlin.test.jackson.dummyJsonFactory
 
+@Category(RequireCouchDB::class)
 class JacksonCouchDBDocumentCRUDTest : JacksonCouchDBBaseTest() {
     @Test
     fun existsDocTest() = org.kouchlin.test.shared.existsDocTest(couchdb)

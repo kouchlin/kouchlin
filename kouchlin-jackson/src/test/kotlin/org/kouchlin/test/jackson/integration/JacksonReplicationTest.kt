@@ -17,8 +17,11 @@
 package org.kouchlin.test.jackson.integration
 
 import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.kouchlin.test.base.RequireCouchDB
 import org.kouchlin.test.jackson.base.JacksonCouchDBBaseTest
 
+@Category(RequireCouchDB::class)
 class JacksonReplicationTest : JacksonCouchDBBaseTest() {
 
     @Test

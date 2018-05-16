@@ -17,10 +17,13 @@
 package org.kouchlin.test.jackson.integration
 
 import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.kouchlin.test.base.RequireCouchDB
 import org.kouchlin.test.jackson.base.JacksonCouchDBBaseTest
 import org.kouchlin.test.jackson.dummyJsonFactory
 import org.kouchlin.test.jackson.rev
 
+@Category(RequireCouchDB::class)
 class JacksonBasicCouchDBTest : JacksonCouchDBBaseTest() {
 
     @Test

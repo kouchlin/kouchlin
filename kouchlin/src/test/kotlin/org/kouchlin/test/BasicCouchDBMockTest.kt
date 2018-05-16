@@ -19,14 +19,17 @@ package org.kouchlin.test
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Method
 import org.junit.Test
+import org.junit.experimental.categories.Category
 import org.kouchlin.CouchDB
 import org.kouchlin.auth.BasicAuthentication
 import org.kouchlin.test.base.CouchDBBaseMockTest
+import org.kouchlin.test.base.MockTest
 import org.kouchlin.test.base.mock
 import org.kouchlin.test.shared.*
 import org.kouchlin.util.STATUS
 import kotlin.test.assertTrue
 
+@Category(MockTest::class)
 class BasicCouchDBMockTest : CouchDBBaseMockTest() {
 
     @Test

@@ -17,8 +17,11 @@
 package org.kouchlin.test
 
 import org.junit.Test
+import org.junit.experimental.categories.Category
 import org.kouchlin.test.base.CouchDBBaseTest
+import org.kouchlin.test.base.RequireCouchDB
 
+@Category(RequireCouchDB::class)
 class BasicCouchDBTest : CouchDBBaseTest() {
 
 

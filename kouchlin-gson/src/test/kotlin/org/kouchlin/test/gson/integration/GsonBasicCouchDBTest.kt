@@ -17,10 +17,13 @@
 package org.kouchlin.test.gson.integration
 
 import org.junit.Test
+import org.junit.experimental.categories.Category
+import org.kouchlin.test.base.RequireCouchDB
 import org.kouchlin.test.gson.base.GsonCouchDBBaseTest
 import org.kouchlin.test.gson.dummyJsonFactory
 import org.kouchlin.test.gson.rev
 
+@Category(RequireCouchDB::class)
 class GsonBasicCouchDBTest : GsonCouchDBBaseTest() {
     @Test
     fun couchDBUpTest() = org.kouchlin.test.shared.couchDBUpTest(couchdb)
