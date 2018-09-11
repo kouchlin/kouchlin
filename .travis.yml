@@ -9,7 +9,8 @@ jdk:
 
 services:
   - docker
-
+  
+before_install: JAVA_HOME=$(jdk_switcher home oraclejdk8) mvn --projects . gradle:invoke -Dtasks=:help
 install:
   - docker pull couchdb:2.1.1
   - docker run -d -p 127.0.0.1:5984:5984 couchdb:2.1.1
