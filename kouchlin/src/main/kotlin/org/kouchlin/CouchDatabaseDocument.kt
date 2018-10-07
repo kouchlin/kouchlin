@@ -118,7 +118,7 @@ class CouchDatabaseDocument(val db: CouchDatabase, val id: String? = null, val r
         }
 
         if (docId != null && id != null && id != docId) {
-            logger.warn("Document Id $docId included in the document is overriden by parameter $id")
+            logger.warn("Document Id $docId included in the document is overridden by parameter $id")
         }
 
         val queryString = configureParameters(rev = rev ?: docRev,
