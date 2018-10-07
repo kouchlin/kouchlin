@@ -55,3 +55,4 @@ build/
 .settings/
 .classpath
 local.properties
+gradle.properties
