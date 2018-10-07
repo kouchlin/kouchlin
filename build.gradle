@@ -4,15 +4,10 @@ buildscript {
 
         //dependencies version
         kotlinVersion = '1.2.41'
-        resultVersion = '1.3.0'
-		fuelVersion = '1.12.1'
+		fuelVersion = '1.13.0'
 
         //test dependencies version
         junitVersion = '4.12'
-        robolectricVersion = '3.4.2'
-        gsonVersion = '2.8.2'
-        jacksonVersion = '2.9.3'
-        moshiVersion = '1.5.0'
     }
 
   repositories {
@@ -21,6 +16,8 @@ buildscript {
   }
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+      // The Gradle Bintray Plugin allows you to publish artifacts to Bintray.
+      classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.2'
   }
 }
 

@@ -1,0 +1,47 @@
+apply plugin: 'com.jfrog.bintray'
+
+//the file, containing the bintray API key
+ext {
+    // This configuration will result in:
+    // compile '<groupId>:<artifactId>:<libVersion>'
+    groupId = 'org.kouchlin' // package name of the project
+    artifactId = "kouchlin" // module name of the library
+    libVersion = "0.1.0"
+}
+version = libVersion
+group = groupId
+//take a look at https://github.com/bintray/gradle-bintray-plugin#buildgradle
+bintray {
+    user = bintray_user
+    key = bintray_key
+    configurations = ['archives']
+    publish = true //[Default: false] Whether version should be auto published after an upload
+    override = true //[Default: false] Whether to override version artifacts already published
+    // Package configuration. The plugin will use the repo and name properties to check if the
+    // package already exists. In that case, there's no need to configure the other package
+    // properties (like userOrg, desc, etc).
+    pkg {
+        repo = "kouchlin" //bintray repo
+        name = "kouchlin" //bintray package
+        userOrg="kouchlin"
+        version {
+            name = libVersion
+        }
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+    // options.encoding = 'UTF-8'
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
