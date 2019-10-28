@@ -6,15 +6,15 @@ ext {
     // compile '<groupId>:<artifactId>:<libVersion>'
     groupId = 'org.kouchlin' // package name of the project
     artifactId = "kouchlin-jackson" // module name of the library
-    libVersion = "0.1.0"
+    libVersion = "0.1.1"
 }
 version = libVersion
 group = groupId
 //take a look at https://github.com/bintray/gradle-bintray-plugin#buildgradle
 bintray {
-    user = bintray_user // Your bintray User
+    user = bintray_user
     key = bintray_key
-    configurations = ['archives']
+    publications = ['BintrayPublication']
     publish = true //[Default: false] Whether version should be auto published after an upload
     override = true //[Default: false] Whether to override version artifacts already published
     // Package configuration. The plugin will use the repo and name properties to check if the
@@ -41,7 +41,42 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     // options.encoding = 'UTF-8'
 }
 
-artifacts {
-    archives javadocJar
-    archives sourcesJar
+// Create the pom configuration:
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "jjrodrig"
+            name "Juanjo Rodriguez"
+        }
+    }
+
+    scm {
+        url "https://github.com/kouchlin/kouchlin"
+    }
+
+}
+
+// Create the publication with the pom configuration:
+publishing {
+    publications {
+        BintrayPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Kouchlin a Kotlin CouchDB client wrapper')
+                root.appendNode('name', 'Kouchlin Jackson')
+                root.appendNode('url', 'https://github.com/kouchlin/kouchlin')
+                root.children().last() + pomConfig
+            }
+        }
+    }
 }
